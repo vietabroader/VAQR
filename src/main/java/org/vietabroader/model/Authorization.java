@@ -25,38 +25,34 @@ import java.util.List;
 /**
  * This class contains static method(s) for authorizing Google API.
  */
-public class Authorization {
+class Authorization {
 
     private static final Logger logger = LoggerFactory.getLogger(Authorization.class);
 
-    private static final String APPLICATION_NAME = "vaqr";
+    static final String APPLICATION_NAME = "vaqr";
+
+    /// Authorization stuff
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
             System.getProperty("user.home"), ".credentials/vietabroader.org-vaqr");
+    static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    static HttpTransport HTTP_TRANSPORT;
+    private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS);
 
-    private static FileDataStoreFactory DATA_STORE_FACTORY;
-
-    private static final JsonFactory JSON_FACTORY =
-            JacksonFactory.getDefaultInstance();
-
-    private static HttpTransport HTTP_TRANSPORT;
-
-    private static final List<String> SCOPES =
-            Arrays.asList(SheetsScopes.SPREADSHEETS);
-
-    private static Credential cachedCredential;
+    private static Credential cachedCredential; // Cache credential so that we don't have
+                                                // to reload from disk.
 
     /**
      * Creates an authorized Credential object.
      * @return an authorized Credential object.
      */
-    public static Credential authorize() throws IOException, GeneralSecurityException {
+    static Credential authorize() throws IOException, GeneralSecurityException {
 
         if (cachedCredential != null) {
             return cachedCredential;
         }
 
         HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+        FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
 
         // Load client secrets.
         InputStream in =
@@ -68,7 +64,7 @@ public class Authorization {
         GoogleAuthorizationCodeFlow flow =
                 new GoogleAuthorizationCodeFlow.Builder(
                         HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                        .setDataStoreFactory(DATA_STORE_FACTORY)
+                        .setDataStoreFactory(dataStoreFactory)
                         .setAccessType("offline")
                         .build();
         Credential credential = new AuthorizationCodeInstalledApp(
@@ -80,6 +76,9 @@ public class Authorization {
         return credential;
     }
 
+    /**
+     * Removes the stored credential on disk.
+     */
     public static void clearStoredCredential() {
         cachedCredential = null;
         try {
