@@ -49,8 +49,10 @@ class MainView extends JFrame {
         });
         c.gridx = 0;
         c.gridy = 0;
+        c.anchor = GridBagConstraints.LINE_START;
         panel.add(btnSignIn, c);
 
+        lblEmail.setPreferredSize(new Dimension(300, 15));
         c.gridx = 1;
         c.gridy = 0;
         c.insets = new Insets(5, 5, 10, 10);

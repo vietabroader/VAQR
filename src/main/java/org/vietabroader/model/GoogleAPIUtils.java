@@ -54,6 +54,7 @@ public class GoogleAPIUtils {
     public static Credential getCredential() throws IOException, GeneralSecurityException {
 
         if (cachedCredential != null) {
+            logger.info("Cached credential found");
             return cachedCredential;
         }
 
@@ -76,7 +77,8 @@ public class GoogleAPIUtils {
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
 
-        logger.info("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        logger.info("Credential acquired");
+        logger.info("Credentials saved at " + DATA_STORE_DIR.getAbsolutePath());
 
         cachedCredential = credential;
         return credential;
@@ -103,6 +105,7 @@ public class GoogleAPIUtils {
         Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        logger.info("Retrieving user email...");
         Userinfoplus userinfo = oauth2.userinfo().get().execute();
         return userinfo.getEmail();
     }
