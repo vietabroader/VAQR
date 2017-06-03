@@ -10,6 +10,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.oauth2.Oauth2;
+import com.google.api.services.oauth2.Oauth2Scopes;
+import com.google.api.services.oauth2.model.Userinfoplus;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -25,18 +28,21 @@ import java.util.List;
 /**
  * This class contains static method(s) for authorizing Google API.
  */
-class Authorization {
+public class GoogleAPIUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(Authorization.class);
+    private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
 
     static final String APPLICATION_NAME = "vaqr";
 
-    /// Authorization stuff
+    // Authorization stuff
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
             System.getProperty("user.home"), ".credentials/vietabroader.org-vaqr");
     static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     static HttpTransport HTTP_TRANSPORT;
-    private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS);
+
+    private static final List<String> SCOPES = Arrays.asList(
+            SheetsScopes.SPREADSHEETS,
+            Oauth2Scopes.USERINFO_EMAIL);
 
     private static Credential cachedCredential; // Cache credential so that we don't have
                                                 // to reload from disk.
@@ -45,7 +51,7 @@ class Authorization {
      * Creates an authorized Credential object.
      * @return an authorized Credential object.
      */
-    static Credential authorize() throws IOException, GeneralSecurityException {
+    public static Credential getCredential() throws IOException, GeneralSecurityException {
 
         if (cachedCredential != null) {
             return cachedCredential;
@@ -56,7 +62,7 @@ class Authorization {
 
         // Load client secrets.
         InputStream in =
-                Authorization.class.getResourceAsStream("/client_secret.json");
+                GoogleAPIUtils.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
@@ -86,5 +92,18 @@ class Authorization {
         } catch (IOException e) {
             logger.warn("No stored credential found");
         }
+    }
+
+    /**
+     * Open browser and ask for user name and password if not already signed in
+     * @return Email of the signed in user
+     */
+    public static String signInAndGetEmail() throws IOException, GeneralSecurityException {
+        Credential credential = getCredential();
+        Oauth2 oauth2 = new Oauth2.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+        Userinfoplus userinfo = oauth2.userinfo().get().execute();
+        return userinfo.getEmail();
     }
 }

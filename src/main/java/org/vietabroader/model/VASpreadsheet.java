@@ -26,11 +26,11 @@ public class VASpreadsheet {
         if (cachedSheetsService != null) {
             return cachedSheetsService;
         }
-        Credential credential = Authorization.authorize();
-        Sheets service = new Sheets.Builder(Authorization.HTTP_TRANSPORT,
-                                            Authorization.JSON_FACTORY,
+        Credential credential = GoogleAPIUtils.getCredential();
+        Sheets service = new Sheets.Builder(GoogleAPIUtils.HTTP_TRANSPORT,
+                                            GoogleAPIUtils.JSON_FACTORY,
                                             credential)
-                .setApplicationName(Authorization.APPLICATION_NAME)
+                .setApplicationName(GoogleAPIUtils.APPLICATION_NAME)
                 .build();
         cachedSheetsService = service;
         return service;
