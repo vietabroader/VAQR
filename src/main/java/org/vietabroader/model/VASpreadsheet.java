@@ -4,6 +4,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
+import org.vietabroader.GoogleAPIUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -43,8 +44,6 @@ public class VASpreadsheet {
      * Constructs a new VASpreadsheet object.
      * @param spreadsheetId id of the spreadsheet. This value can be obtained from the URL to the
      *                      spreadsheet.
-     * @throws IOException
-     * @throws GeneralSecurityException
      */
     public VASpreadsheet(String spreadsheetId) throws IOException, GeneralSecurityException {
         this.spreadsheetId = spreadsheetId;

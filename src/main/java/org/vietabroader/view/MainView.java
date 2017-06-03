@@ -1,6 +1,6 @@
 package org.vietabroader.view;
 
-import org.vietabroader.model.GoogleAPIUtils;
+import org.vietabroader.GoogleAPIUtils;
 
 import javax.swing.*;
 

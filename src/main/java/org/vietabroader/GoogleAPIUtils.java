@@ -1,4 +1,4 @@
-package org.vietabroader.model;
+package org.vietabroader;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -32,13 +32,13 @@ public class GoogleAPIUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
 
-    static final String APPLICATION_NAME = "vaqr";
+    public static final String APPLICATION_NAME = "VAQR";
 
     // Authorization stuff
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/vietabroader.org-vaqr");
-    static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    static HttpTransport HTTP_TRANSPORT;
+            System.getProperty("user.home"), ".credentials/vietabroader.org-VAQR");
+    public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    public static HttpTransport HTTP_TRANSPORT;
 
     private static final List<String> SCOPES = Arrays.asList(
             SheetsScopes.SPREADSHEETS,
