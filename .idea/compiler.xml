@@ -19,8 +19,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="vaqr_main" target="1.7" />
-      <module name="vaqr_test" target="1.7" />
+      <module name="VAQR_main" target="1.7" />
+      <module name="VAQR_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

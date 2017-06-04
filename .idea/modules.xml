@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vaqr.iml" filepath="$PROJECT_DIR$/.idea/modules/vaqr.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vaqr_main.iml" filepath="$PROJECT_DIR$/.idea/modules/vaqr_main.iml" group="vaqr" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vaqr_test.iml" filepath="$PROJECT_DIR$/.idea/modules/vaqr_test.iml" group="vaqr" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VAQR.iml" filepath="$PROJECT_DIR$/.idea/modules/VAQR.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VAQR_main.iml" filepath="$PROJECT_DIR$/.idea/modules/VAQR_main.iml" group="VAQR" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VAQR_test.iml" filepath="$PROJECT_DIR$/.idea/modules/VAQR_test.iml" group="VAQR" />
     </modules>
   </component>
 </project>

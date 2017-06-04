@@ -23,7 +23,7 @@ public class VASpreadsheet {
      * Build and return an authorized Sheets API client service.
      * @return an authorized Sheets API client service
      */
-        public static Sheets getSheetsService() throws IOException, GeneralSecurityException {
+    public static Sheets getSheetsService() throws IOException, GeneralSecurityException {
         if (cachedSheetsService != null) {
             return cachedSheetsService;
         }

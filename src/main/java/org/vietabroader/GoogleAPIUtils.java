@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class contains static method(s) for authorizing Google API.
+ * This class contains static methods for authorizing Google API.
  */
 public class GoogleAPIUtils {
 
@@ -97,7 +97,7 @@ public class GoogleAPIUtils {
     }
 
     /**
-     * Open browser and ask for user name and password if not already signed in
+     * Opens browser and asks for user name and password if not already signed in
      * @return Email of the signed in user
      */
     public static String signInAndGetEmail() throws IOException, GeneralSecurityException {
