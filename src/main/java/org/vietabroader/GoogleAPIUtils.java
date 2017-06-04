@@ -48,7 +48,8 @@ public class GoogleAPIUtils {
                                                 // to reload from disk.
 
     /**
-     * Creates an authorized Credential object.
+     * Creates an authorized Credential object. A browser is popped up for signing in to Google
+     * if no locally saved credential is found.
      * @return an authorized Credential object.
      */
     public static Credential getCredential() throws IOException, GeneralSecurityException {
