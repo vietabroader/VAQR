@@ -1,7 +1,5 @@
 package org.vietabroader.model;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import org.vietabroader.GoogleAPIUtils;
@@ -17,26 +15,6 @@ import java.util.List;
  */
 public class VASpreadsheet {
 
-    private static Sheets cachedSheetsService;
-
-    /**
-     * Build and return an authorized Sheets API client service.
-     * @return an authorized Sheets API client service
-     */
-    public static Sheets getSheetsService() throws IOException, GeneralSecurityException {
-        if (cachedSheetsService != null) {
-            return cachedSheetsService;
-        }
-        Credential credential = GoogleAPIUtils.getCredential();
-        Sheets service = new Sheets.Builder(GoogleAPIUtils.HTTP_TRANSPORT,
-                                            GoogleAPIUtils.JSON_FACTORY,
-                                            credential)
-                .setApplicationName(GoogleAPIUtils.APPLICATION_NAME)
-                .build();
-        cachedSheetsService = service;
-        return service;
-    }
-
     private String spreadsheetId;
     private Spreadsheet spreadSheet;
 
@@ -47,7 +25,9 @@ public class VASpreadsheet {
      */
     public VASpreadsheet(String spreadsheetId) throws IOException, GeneralSecurityException {
         this.spreadsheetId = spreadsheetId;
-        this.spreadSheet = getSheetsService().spreadsheets().get(spreadsheetId).execute();
+        this.spreadSheet = GoogleAPIUtils.getSheetsService().spreadsheets()
+                .get(spreadsheetId)
+                .execute();
     }
 
     /**
