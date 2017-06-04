@@ -50,7 +50,7 @@ public class GoogleAPIUtils {
             DriveScopes.DRIVE_FILE,
             Oauth2Scopes.USERINFO_EMAIL);
 
-    // Cache credentials and servcies so that we don't need to re-initiate every time
+    // Cache credentials and services so that we don't need to reinitialize every time
     private static Credential cachedCredential;
     private static Sheets cachedSheetsService;
     private static Drive cachedDriveService;
@@ -58,7 +58,7 @@ public class GoogleAPIUtils {
     /**
      * Creates an authorized Credential object. A browser is popped up for signing in to Google
      * if no locally saved credential is found.
-     * @return an authorized Credential object.
+     * @return An authorized Credential object.
      */
     public static Credential getCredential() throws IOException, GeneralSecurityException {
 
@@ -106,7 +106,7 @@ public class GoogleAPIUtils {
     }
 
     /**
-     * Opens browser and asks for user name and password if not already signed in
+     * Opens browser and asks for user name and password if not already signed in.
      * @return Email of the signed in user
      */
     public static String signInAndGetEmail() throws IOException, GeneralSecurityException {
@@ -121,7 +121,7 @@ public class GoogleAPIUtils {
 
     /**
      * Build and return an authorized Sheets API client service.
-     * @return an authorized Sheets API client service
+     * @return An authorized Sheets API client service
      */
     public static Sheets getSheetsService() throws IOException, GeneralSecurityException {
         if (cachedSheetsService != null) {
@@ -139,7 +139,7 @@ public class GoogleAPIUtils {
 
     /**
      * Builds and returns an authorized Drive API client service.
-     * @return an authorized Drive API client service
+     * @return An authorized Drive API client service
      */
     private static Drive getDriveService() throws IOException, GeneralSecurityException {
         if (cachedDriveService != null) {
@@ -175,6 +175,7 @@ public class GoogleAPIUtils {
                 .setDescription(description);
 
         FileContent mediaContent = new FileContent("image/png", localFile);
+
         logger.debug("Uploading {}...", filePath);
         File returnedFile = drive.files().create(fileMetadata, mediaContent)
                 .setFields("id, webViewLink")
