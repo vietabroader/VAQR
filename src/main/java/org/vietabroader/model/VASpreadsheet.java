@@ -31,14 +31,14 @@ public class VASpreadsheet {
     }
 
     /**
-     * @return the title of this spreadsheet
+     * @return The title of this spreadsheet
      */
     public String getSpreadsheetTitle() {
         return this.spreadSheet.getProperties().getTitle();
     }
 
     /**
-     * @return a list of titles of the sheets belong to this spreadsheet.
+     * @return A list of titles of the sheets belong to this spreadsheet.
      */
     public List<String> getSheetTitles() {
         List<String> titles = new ArrayList<>();

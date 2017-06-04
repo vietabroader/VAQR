@@ -3,6 +3,9 @@ package org.vietabroader.view;
 import org.vietabroader.GoogleAPIUtils;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,10 +21,28 @@ class MainView extends JFrame {
     }
 
     private void initUI() {
-        JPanel panelMain = new JPanel();
+        DefaultPanel panelMain = new DefaultPanel();
         getContentPane().add(panelMain);
+        GridBagConstraints c = panelMain.c;
 
-        panelMain.add(createSignInPanel());
+        c.weightx = 1;
+        c.gridwidth = 2;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(4,4,4,4);
+        panelMain.add(createSignInPanel(), c);
+
+        c.gridy++;
+        panelMain.add(createWorkspacePanel(), c);
+
+        c.gridy++;
+        panelMain.add(createColumnPanel(), c);
+
+        c.gridwidth = 1;
+        c.gridy++;
+        c.fill = GridBagConstraints.BOTH;
+        panelMain.add(createGeneratePanel(), c);
+        c.gridx++;
+        panelMain.add(createWebcamPanel(), c);
 
         setTitle("VAQR");
         setLocationRelativeTo(null);
@@ -30,9 +51,20 @@ class MainView extends JFrame {
         pack();
     }
 
+    private class DefaultPanel extends JPanel {
+        private GridBagConstraints c;
+        private DefaultPanel() {
+            this.setLayout(new GridBagLayout());
+            c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+        }
+    }
+
     private JPanel createSignInPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
+        panel.setBorder(new CompoundBorder(new TitledBorder("Account"), new EmptyBorder(8, 0, 0,0)));
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -61,6 +93,130 @@ class MainView extends JFrame {
         c.insets = new Insets(5, 5, 10, 10);
         c.ipadx = 70;
         panel.add(lblEmail, c);
+
+        return panel;
+    }
+
+    private JPanel createSpreadsheetPanel() {
+        DefaultPanel panel = new DefaultPanel();
+        GridBagConstraints c = panel.c;
+
+        c.anchor = GridBagConstraints.LINE_END;
+        panel.add(new JLabel("Spreadsheet ID: "), c);
+
+        c.gridx++;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JTextField(15), c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridx++;
+        panel.add(new JButton("Connect"));
+        return panel;
+    };
+
+    private JPanel createWorkspacePanel() {
+        DefaultPanel panel = new DefaultPanel();
+        panel.setBorder(new CompoundBorder(new TitledBorder("Workspace"), new EmptyBorder(8, 0, 0,0)));
+        GridBagConstraints c = panel.c;
+
+        c.anchor = GridBagConstraints.LINE_END;
+        panel.add(new JLabel("Sheet: "), c);
+        c.gridy++;
+        panel.add(new JLabel("Column: "), c);
+        c.gridy++;
+        panel.add(new JLabel("Row: "), c);
+
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        String[] sheet = {"Sheet1", "Sheet2"};
+        panel.add(new JSpinner(new SpinnerListModel(sheet)), c);
+
+        c.gridy++;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
+        panel.add(new JSpinner(), c);
+        c.anchor = GridBagConstraints.CENTER;
+        panel.add(new JLabel("to"), c);
+        c.anchor = GridBagConstraints.LINE_END;
+        panel.add(new JSpinner(), c);
+
+        c.gridx = 1;
+        c.gridy++;
+        c.anchor = GridBagConstraints.LINE_START;
+        panel.add(new JSpinner(), c);
+        c.anchor = GridBagConstraints.CENTER;
+        panel.add(new JLabel("to"), c);
+        c.anchor = GridBagConstraints.LINE_END;
+        panel.add(new JSpinner(), c);
+
+        return panel;
+
+    }
+
+    private JPanel createColumnPanel() {
+        DefaultPanel panel = new DefaultPanel();
+        GridBagConstraints c = panel.c;
+        panel.setBorder(new CompoundBorder(new TitledBorder("Column"), new EmptyBorder(8, 0, 0,0)));
+        String[] a = {"a", "b"};
+        c.weightx = 0.25;
+        panel.add(createOneColumn("Key", a), c);
+        c.gridx++;
+        panel.add(createOneColumn("Secret", a), c);
+        c.gridx++;
+        panel.add(createOneColumn("QR", a), c);
+        c.gridx++;
+        panel.add(createOneColumn("Output", a), c);
+        return panel;
+    }
+
+
+    private JPanel createOneColumn(String label, String[] columnArray) {
+        DefaultPanel panel = new DefaultPanel();
+        GridBagConstraints c = panel.c;
+        c.anchor = GridBagConstraints.CENTER;
+        panel.add(new JLabel(label), c);
+        c.gridy++;
+        panel.add(new JSpinner(new SpinnerListModel(columnArray)), c);
+        return panel;
+    }
+
+    private JPanel createGeneratePanel() {
+        DefaultPanel panel = new DefaultPanel();
+        GridBagConstraints c = panel.c;
+        panel.setBorder(new CompoundBorder(new TitledBorder("Generate QR Code"), new EmptyBorder(8, 0, 0,0)));
+
+        c.anchor = GridBagConstraints.LINE_START;
+        panel.add(new JLabel("Drive folder ID"), c);
+        c.gridy++;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JTextField(15), c);
+
+
+        c.gridy++;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        panel.add(new JButton("Generate QR Code"), c);
+
+        return panel;
+    }
+
+    private JPanel createWebcamPanel() {
+        DefaultPanel panel = new DefaultPanel();
+        GridBagConstraints c = panel.c;
+        panel.setBorder(new CompoundBorder(new TitledBorder("Scan QR Code"), new EmptyBorder(8, 0, 0,0)));
+
+        c.fill = GridBagConstraints.VERTICAL;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridheight = GridBagConstraints.RELATIVE;
+        panel.add(new JLabel("Webcam"), c);
+
+        c.gridy = 2;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        panel.add(new JButton("Start Webcam"), c);
 
         return panel;
     }
