@@ -32,6 +32,9 @@ class MainView extends JFrame {
         panelMain.add(createSignInPanel(), c);
 
         c.gridy++;
+        panelMain.add(createSpreadsheetPanel(), c);
+
+        c.gridy++;
         panelMain.add(createWorkspacePanel(), c);
 
         c.gridy++;
@@ -100,12 +103,12 @@ class MainView extends JFrame {
     private JPanel createSpreadsheetPanel() {
         DefaultPanel panel = new DefaultPanel();
         GridBagConstraints c = panel.c;
+        panel.setBorder(new CompoundBorder(new TitledBorder("Spreadsheet"), new EmptyBorder(8, 0, 0,0)));
 
-        c.anchor = GridBagConstraints.LINE_END;
+        c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JLabel("Spreadsheet ID: "), c);
 
         c.gridx++;
-        c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JTextField(15), c);
 
@@ -130,30 +133,32 @@ class MainView extends JFrame {
         c.gridx = 1;
         c.gridy = 0;
         c.weightx = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.BOTH;
         String[] sheet = {"Sheet1", "Sheet2"};
         panel.add(new JSpinner(new SpinnerListModel(sheet)), c);
 
+
+        c.gridx = 1;
         c.gridy++;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(new JSpinner(), c);
+        c.gridwidth = 1;
+        c.weightx = 0.33;
         c.anchor = GridBagConstraints.CENTER;
+        panel.add(new JSpinner(), c);
+        c.gridx++;
         panel.add(new JLabel("to"), c);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.gridx++;
         panel.add(new JSpinner(), c);
 
         c.gridx = 1;
         c.gridy++;
-        c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JSpinner(), c);
-        c.anchor = GridBagConstraints.CENTER;
+        c.gridx++;
         panel.add(new JLabel("to"), c);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.gridx++;
         panel.add(new JSpinner(), c);
 
         return panel;
-
     }
 
     private JPanel createColumnPanel() {
