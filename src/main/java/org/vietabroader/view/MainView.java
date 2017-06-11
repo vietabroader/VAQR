@@ -215,10 +215,10 @@ class MainView extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JTextField(15), c);
 
-
+        c = new GridBagConstraints();
+        c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.NONE;
         panel.add(new JButton("Generate QR Code"), c);
 
         return panel;
@@ -234,9 +234,10 @@ class MainView extends JFrame {
         c.gridheight = GridBagConstraints.RELATIVE;
         panel.add(new JLabel("Webcam"), c);
 
+        c = new GridBagConstraints();
+        c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.NONE;
         panel.add(new JButton("Start Webcam"), c);
 
         return panel;
