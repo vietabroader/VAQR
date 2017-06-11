@@ -28,7 +28,7 @@ class MainView extends JFrame {
 
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(4, 4, 4, 4);
+        c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
         panelMain.add(createSignInPanel(), c);
 
         c.gridy = 2;
@@ -40,9 +40,9 @@ class MainView extends JFrame {
         c.gridy = 4;
         panelMain.add(createColumnPanel(), c);
 
-        c.gridx = 0;
         c.gridy = 5;
         c.gridwidth = 1;
+        c.gridx = 0;
         panelMain.add(createGeneratePanel(), c);
 
         c.gridx = 1;
@@ -58,7 +58,10 @@ class MainView extends JFrame {
     private class TitledPanel extends JPanel {
         private TitledPanel(String title) {
             this.setLayout(new GridBagLayout());
-            this.setBorder(new CompoundBorder(new TitledBorder(title), new EmptyBorder(8, 8, 8, 8)));
+            this.setBorder(new CompoundBorder(
+                    new TitledBorder(title),
+                    new EmptyBorder(8, 8, 8, 8))    // Inner padding of each panel
+            );
         }
     }
 
