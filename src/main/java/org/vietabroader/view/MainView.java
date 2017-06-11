@@ -137,6 +137,7 @@ class MainView extends JFrame {
         String[] sheet = {"Sheet1", "Sheet2"};
         panel.add(new JComboBox(sheet), c);
 
+
         c = new GridBagConstraints();
         c.gridy = 1;
         panel.add(new JLabel("Column: "), c);
@@ -146,11 +147,17 @@ class MainView extends JFrame {
         c.weightx = 0.33;
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
+
+        c.fill = GridBagConstraints.NONE;
         c.gridx = 2;
         panel.add(new JLabel("to"), c);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
         panel.add(new JSpinner(), c);
+
 
         c = new GridBagConstraints();
         c.gridx = 0;
@@ -161,9 +168,14 @@ class MainView extends JFrame {
         c.weightx = 0.33;
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
+
+        c.fill = GridBagConstraints.NONE;
         c.gridx = 2;
         panel.add(new JLabel("to"), c);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
         panel.add(new JSpinner(), c);
 
@@ -177,6 +189,7 @@ class MainView extends JFrame {
 
         String[] a = {"a", "b"};
         c.weightx = 0.25;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(createOneColumn("Key", a), c);
 
         c.gridx = 1;
@@ -194,10 +207,13 @@ class MainView extends JFrame {
     private JPanel createOneColumn(String label, String[] columnArray) {
         DefaultPanel panel = new DefaultPanel();
         GridBagConstraints c = panel.c;
+
         c.anchor = GridBagConstraints.CENTER;
         panel.add(new JLabel(label), c);
 
         c.gridy = 1;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(new SpinnerListModel(columnArray)), c);
 
         return panel;
