@@ -21,14 +21,14 @@ class MainView extends JFrame {
     }
 
     private void initUI() {
-        DefaultPanel panelMain = new DefaultPanel();
+        JPanel panelMain = new JPanel();
+        panelMain.setLayout(new GridBagLayout());
         getContentPane().add(panelMain);
-        GridBagConstraints c = panelMain.c;
+        GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 1;
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(4,4,4,4);
+        c.insets = new Insets(4, 4, 4, 4);
         panelMain.add(createSignInPanel(), c);
 
         c.gridy = 2;
@@ -40,36 +40,31 @@ class MainView extends JFrame {
         c.gridy = 4;
         panelMain.add(createColumnPanel(), c);
 
-        c.gridwidth = 1;
         c.gridx = 0;
         c.gridy = 5;
-        c.fill = GridBagConstraints.BOTH;
+        c.gridwidth = 1;
         panelMain.add(createGeneratePanel(), c);
 
         c.gridx = 1;
         panelMain.add(createWebcamPanel(), c);
 
         setTitle("VAQR");
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         pack();
+        setLocationRelativeTo(null);
     }
 
-    private class DefaultPanel extends JPanel {
-        private GridBagConstraints c;
-        private DefaultPanel() {
+    private class TitledPanel extends JPanel {
+        private TitledPanel(String title) {
             this.setLayout(new GridBagLayout());
-            c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
+            this.setBorder(new CompoundBorder(new TitledBorder(title), new EmptyBorder(8, 8, 8, 8)));
         }
     }
 
     private JPanel createSignInPanel() {
-        JPanel panel = new JPanel();
+        TitledPanel panel = new TitledPanel("Account");
         panel.setLayout(new GridBagLayout());
-        panel.setBorder(new CompoundBorder(new TitledBorder("Account"), new EmptyBorder(8, 0, 0,0)));
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -95,17 +90,14 @@ class MainView extends JFrame {
         lblEmail.setPreferredSize(new Dimension(300, 15));
         c.gridx = 1;
         c.gridy = 0;
-        c.insets = new Insets(5, 5, 10, 10);
-        c.ipadx = 70;
         panel.add(lblEmail, c);
 
         return panel;
     }
 
     private JPanel createSpreadsheetPanel() {
-        DefaultPanel panel = new DefaultPanel();
-        GridBagConstraints c = panel.c;
-        panel.setBorder(new CompoundBorder(new TitledBorder("Spreadsheet"), new EmptyBorder(8, 0, 0,0)));
+        TitledPanel panel = new TitledPanel("Spreadsheet");
+        GridBagConstraints c = new GridBagConstraints();
 
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JLabel("Spreadsheet ID: "), c);
@@ -122,74 +114,83 @@ class MainView extends JFrame {
     };
 
     private JPanel createWorkspacePanel() {
-        DefaultPanel panel = new DefaultPanel();
-        panel.setBorder(new CompoundBorder(new TitledBorder("Workspace"), new EmptyBorder(8, 0, 0,0)));
-        GridBagConstraints c = panel.c;
+        TitledPanel panel = new TitledPanel("Workspace");
 
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1/6.0;
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Sheet: "), c);
 
         c.gridx = 1;
-        c.gridy = 0;
-        c.weightx = 1;
         c.gridwidth = 3;
-        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 5/6.0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         String[] sheet = {"Sheet1", "Sheet2"};
         panel.add(new JComboBox(sheet), c);
 
 
         c = new GridBagConstraints();
+        c.gridx = 0;
         c.gridy = 1;
+        c.weightx = 1/6.0;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Column: "), c);
 
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.33;
-        c.anchor = GridBagConstraints.CENTER;
         c.gridx = 1;
+        c.weightx = 2/6.0;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
 
-        c.fill = GridBagConstraints.NONE;
         c.gridx = 2;
+        c.weightx = 1/6.0;
+        c.fill = GridBagConstraints.NONE;
         panel.add(new JLabel("to"), c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
+        c.weightx = 2/6.0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
 
 
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 2;
+        c.weightx = 1/6.0;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Row: "), c);
 
-        c.gridwidth = 1;
-        c.weightx = 0.33;
-        c.anchor = GridBagConstraints.CENTER;
         c.gridx = 1;
+        c.weightx = 2/6.0;
+        c.anchor = GridBagConstraints.LINE_END;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
 
-        c.fill = GridBagConstraints.NONE;
         c.gridx = 2;
+        c.weightx = 1/6.0;
+        c.fill = GridBagConstraints.NONE;
         panel.add(new JLabel("to"), c);
 
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
+        c.weightx = 2/6.0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(), c);
 
         return panel;
     }
 
     private JPanel createColumnPanel() {
-        DefaultPanel panel = new DefaultPanel();
-        GridBagConstraints c = panel.c;
-        panel.setBorder(new CompoundBorder(new TitledBorder("Column"), new EmptyBorder(8, 0, 0,0)));
+        TitledPanel panel = new TitledPanel("Key Columns");
+        GridBagConstraints c = new GridBagConstraints();
 
         String[] a = {"a", "b"};
-        c.weightx = 0.25;
+        c.weightx = 1/4.0;
         c.fill = GridBagConstraints.HORIZONTAL;
+
+        c.gridx = 0;
         panel.add(createOneColumn("Key", a), c);
 
         c.gridx = 1;
@@ -203,16 +204,18 @@ class MainView extends JFrame {
         return panel;
     }
 
-
     private JPanel createOneColumn(String label, String[] columnArray) {
-        DefaultPanel panel = new DefaultPanel();
-        GridBagConstraints c = panel.c;
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
+        c.weightx = 1;
+
+        c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
         panel.add(new JLabel(label), c);
 
         c.gridy = 1;
-        c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JSpinner(new SpinnerListModel(columnArray)), c);
 
@@ -220,9 +223,8 @@ class MainView extends JFrame {
     }
 
     private JPanel createGeneratePanel() {
-        DefaultPanel panel = new DefaultPanel();
-        GridBagConstraints c = panel.c;
-        panel.setBorder(new CompoundBorder(new TitledBorder("Generate QR Code"), new EmptyBorder(8, 0, 0,0)));
+        TitledPanel panel = new TitledPanel("Generate QR Code");
+        GridBagConstraints c = new GridBagConstraints();
 
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JLabel("Drive folder ID"), c);
@@ -241,9 +243,8 @@ class MainView extends JFrame {
     }
 
     private JPanel createWebcamPanel() {
-        DefaultPanel panel = new DefaultPanel();
-        GridBagConstraints c = panel.c;
-        panel.setBorder(new CompoundBorder(new TitledBorder("Scan QR Code"), new EmptyBorder(8, 0, 0,0)));
+        TitledPanel panel = new TitledPanel("Scan QR Code");
+        GridBagConstraints c = new GridBagConstraints();
 
         c.fill = GridBagConstraints.VERTICAL;
         c.anchor = GridBagConstraints.LINE_START;
