@@ -31,20 +31,22 @@ class MainView extends JFrame {
         c.insets = new Insets(4,4,4,4);
         panelMain.add(createSignInPanel(), c);
 
-        c.gridy++;
+        c.gridy = 2;
         panelMain.add(createSpreadsheetPanel(), c);
 
-        c.gridy++;
+        c.gridy = 3;
         panelMain.add(createWorkspacePanel(), c);
 
-        c.gridy++;
+        c.gridy = 4;
         panelMain.add(createColumnPanel(), c);
 
         c.gridwidth = 1;
-        c.gridy++;
+        c.gridx = 0;
+        c.gridy = 5;
         c.fill = GridBagConstraints.BOTH;
         panelMain.add(createGeneratePanel(), c);
-        c.gridx++;
+
+        c.gridx = 1;
         panelMain.add(createWebcamPanel(), c);
 
         setTitle("VAQR");
@@ -108,13 +110,14 @@ class MainView extends JFrame {
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JLabel("Spreadsheet ID: "), c);
 
-        c.gridx++;
+        c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JTextField(15), c);
 
         c.anchor = GridBagConstraints.CENTER;
-        c.gridx++;
+        c.gridx = 2;
         panel.add(new JButton("Connect"));
+
         return panel;
     };
 
@@ -125,10 +128,6 @@ class MainView extends JFrame {
 
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Sheet: "), c);
-        c.gridy++;
-        panel.add(new JLabel("Column: "), c);
-        c.gridy++;
-        panel.add(new JLabel("Row: "), c);
 
         c.gridx = 1;
         c.gridy = 0;
@@ -136,26 +135,36 @@ class MainView extends JFrame {
         c.gridwidth = 3;
         c.fill = GridBagConstraints.BOTH;
         String[] sheet = {"Sheet1", "Sheet2"};
-        panel.add(new JSpinner(new SpinnerListModel(sheet)), c);
+        panel.add(new JComboBox(sheet), c);
 
+        c = new GridBagConstraints();
+        c.gridy = 1;
+        panel.add(new JLabel("Column: "), c);
 
-        c.gridx = 1;
-        c.gridy++;
+        c.gridy = 1;
         c.gridwidth = 1;
         c.weightx = 0.33;
         c.anchor = GridBagConstraints.CENTER;
+        c.gridx = 1;
         panel.add(new JSpinner(), c);
-        c.gridx++;
+        c.gridx = 2;
         panel.add(new JLabel("to"), c);
-        c.gridx++;
+        c.gridx = 3;
         panel.add(new JSpinner(), c);
 
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(new JLabel("Row: "), c);
+
+        c.gridwidth = 1;
+        c.weightx = 0.33;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridx = 1;
-        c.gridy++;
         panel.add(new JSpinner(), c);
-        c.gridx++;
+        c.gridx = 2;
         panel.add(new JLabel("to"), c);
-        c.gridx++;
+        c.gridx = 3;
         panel.add(new JSpinner(), c);
 
         return panel;
@@ -165,14 +174,18 @@ class MainView extends JFrame {
         DefaultPanel panel = new DefaultPanel();
         GridBagConstraints c = panel.c;
         panel.setBorder(new CompoundBorder(new TitledBorder("Column"), new EmptyBorder(8, 0, 0,0)));
+
         String[] a = {"a", "b"};
         c.weightx = 0.25;
         panel.add(createOneColumn("Key", a), c);
-        c.gridx++;
+
+        c.gridx = 1;
         panel.add(createOneColumn("Secret", a), c);
-        c.gridx++;
+
+        c.gridx = 2;
         panel.add(createOneColumn("QR", a), c);
-        c.gridx++;
+
+        c.gridx = 3;
         panel.add(createOneColumn("Output", a), c);
         return panel;
     }
@@ -183,8 +196,10 @@ class MainView extends JFrame {
         GridBagConstraints c = panel.c;
         c.anchor = GridBagConstraints.CENTER;
         panel.add(new JLabel(label), c);
-        c.gridy++;
+
+        c.gridy = 1;
         panel.add(new JSpinner(new SpinnerListModel(columnArray)), c);
+
         return panel;
     }
 
@@ -195,12 +210,13 @@ class MainView extends JFrame {
 
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(new JLabel("Drive folder ID"), c);
-        c.gridy++;
+
+        c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JTextField(15), c);
 
 
-        c.gridy++;
+        c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.NONE;
         panel.add(new JButton("Generate QR Code"), c);
