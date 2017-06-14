@@ -1,6 +1,8 @@
 package org.vietabroader.view;
 
 import org.vietabroader.GoogleAPIUtils;
+import org.vietabroader.view.verifier.ColumnVerifier;
+import org.vietabroader.view.verifier.RowVerifier;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -14,6 +16,16 @@ import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 
+
+/*
+Prefix rules:
+btn: JButton
+lbl: JLabel
+txt: JTextField
+spn: JSpinner
+cbb: JComboBox
+pan: JPanel
+ */
 class MainView extends JFrame {
 
     MainView() {
@@ -65,6 +77,7 @@ class MainView extends JFrame {
         }
     }
 
+
     private JPanel createSignInPanel() {
         TitledPanel panel = new TitledPanel("Account");
         panel.setLayout(new GridBagLayout());
@@ -107,14 +120,16 @@ class MainView extends JFrame {
 
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JTextField(15), c);
+        final JTextField txtSpreadsheetID = new JTextField(15);
+        panel.add(txtSpreadsheetID, c);
 
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 2;
-        panel.add(new JButton("Connect"));
+        final JButton btnConnect = new JButton("Connect");
+        panel.add(btnConnect);
 
         return panel;
-    };
+    }
 
     private JPanel createWorkspacePanel() {
         TitledPanel panel = new TitledPanel("Workspace");
@@ -122,65 +137,67 @@ class MainView extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1/6.0;
+        c.weightx = 1 / 6.0;
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Sheet: "), c);
 
         c.gridx = 1;
         c.gridwidth = 3;
-        c.weightx = 5/6.0;
+        c.weightx = 5 / 6.0;
         c.fill = GridBagConstraints.HORIZONTAL;
         String[] sheet = {"Sheet1", "Sheet2"};
-        panel.add(new JComboBox(sheet), c);
+        final JComboBox cbbSheet = new JComboBox(sheet);
+        panel.add(cbbSheet, c);
 
 
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
-        c.weightx = 1/6.0;
+        c.weightx = 1 / 6.0;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Column: "), c);
 
         c.gridx = 1;
-        c.weightx = 2/6.0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSpinner(), c);
+        c.weightx = 2 / 6.0;
+        c.anchor = GridBagConstraints.CENTER;
+        final JTextField txtColFrom = new JTextField(5);
+        txtColFrom.setInputVerifier(new ColumnVerifier());
+        panel.add(txtColFrom, c);
 
         c.gridx = 2;
-        c.weightx = 1/6.0;
-        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1 / 6.0;
         panel.add(new JLabel("to"), c);
 
         c.gridx = 3;
-        c.weightx = 2/6.0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSpinner(), c);
-
+        c.weightx = 2 / 6.0;
+        final JTextField txtColTo = new JTextField(5);
+        txtColTo.setInputVerifier(new ColumnVerifier());
+        panel.add(txtColTo, c);
 
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 2;
-        c.weightx = 1/6.0;
-        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1 / 6.0;
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Row: "), c);
 
         c.gridx = 1;
-        c.weightx = 2/6.0;
-        c.anchor = GridBagConstraints.LINE_END;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSpinner(), c);
+        c.weightx = 2 / 6.0;
+        c.anchor = GridBagConstraints.CENTER;
+        final JTextField txtRowFrom = new JTextField(5);
+        txtRowFrom.setInputVerifier(new RowVerifier());
+        panel.add(txtRowFrom, c);
 
         c.gridx = 2;
-        c.weightx = 1/6.0;
-        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1 / 6.0;
         panel.add(new JLabel("to"), c);
 
         c.gridx = 3;
-        c.weightx = 2/6.0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSpinner(), c);
+        c.weightx = 2 / 6.0;
+        final JTextField txtRowTo = new JTextField(5);
+        txtRowTo.setInputVerifier(new RowVerifier());
+        panel.add(txtRowTo, c);
 
         return panel;
     }
@@ -189,25 +206,28 @@ class MainView extends JFrame {
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
-        String[] a = {"a", "b"};
-        c.weightx = 1/4.0;
+        c.weightx = 1 / 4.0;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
-        panel.add(createOneColumn("Key", a), c);
+        final JPanel panKey = createOneColumn("Key");
+        panel.add(panKey, c);
 
         c.gridx = 1;
-        panel.add(createOneColumn("Secret", a), c);
+        final JPanel panSecret = createOneColumn("Secret");
+        panel.add(panSecret, c);
 
         c.gridx = 2;
-        panel.add(createOneColumn("QR", a), c);
+        final JPanel panQR = createOneColumn("QR");
+        panel.add(panQR, c);
 
         c.gridx = 3;
-        panel.add(createOneColumn("Output", a), c);
+        final JPanel panOutput = createOneColumn("Output");
+        panel.add(panOutput, c);
         return panel;
     }
 
-    private JPanel createOneColumn(String label, String[] columnArray) {
+    private JPanel createOneColumn(String label) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -220,7 +240,9 @@ class MainView extends JFrame {
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSpinner(new SpinnerListModel(columnArray)), c);
+        final JTextField txtCol = new JTextField(5);
+        txtCol.setInputVerifier(new ColumnVerifier());
+        panel.add(txtCol, c);
 
         return panel;
     }
@@ -234,13 +256,15 @@ class MainView extends JFrame {
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JTextField(15), c);
+        final JTextField txtDriveID = new JTextField(15);
+        panel.add(txtDriveID, c);
 
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        panel.add(new JButton("Generate QR Code"), c);
+        final JButton btnQR = new JButton("Generate QR Code");
+        panel.add(btnQR, c);
 
         return panel;
     }
@@ -258,8 +282,10 @@ class MainView extends JFrame {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        panel.add(new JButton("Start Webcam"), c);
+        final JButton btnWebcam = new JButton("Start Webcam");
+        panel.add(btnWebcam, c);
 
         return panel;
     }
 }
+
