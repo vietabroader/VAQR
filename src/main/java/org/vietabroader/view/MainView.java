@@ -14,6 +14,8 @@ import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 
+import com.github.sarxos.webcam.WebcamPanel;
+
 class MainView extends JFrame {
 
     MainView() {
@@ -258,8 +260,16 @@ class MainView extends JFrame {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        panel.add(new JButton("Start Webcam"), c);
+        JButton webcamButton = new JButton("Start Webcam");
+        panel.add(webcamButton, c);
+        webcamButton.addActionListener(new MyAction());
 
         return panel;
+    }
+
+    public class MyAction implements ActionListener {
+        public void actionPerformed(ActionEvent ae){
+            JOptionPane.showMessageDialog(null, "This is the simple message dialog box.", "Roseindia.net", 1);
+        }
     }
 }
