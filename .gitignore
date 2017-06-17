@@ -134,3 +134,5 @@ fabric.properties
 
 # Key files
 client_secret.json
+
+.idea/kotlinc.xml

@@ -29,4 +29,22 @@ public class VASpreadsheetTest {
         Assert.assertTrue(titles.contains("Receipt"));
         Assert.assertTrue(titles.contains("Language"));
     }
+
+    @Test
+    public void testReadColumn() throws IOException, GeneralSecurityException{
+        VASpreadsheet spreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
+        spreadsheet.init();
+        String key1 = spreadsheet.readFirstColumn();
+        String key2 = "A";
+        Assert.assertEquals(key1,key2);
+    }
+
+    @Test
+    public void testReadKey() throws IOException, GeneralSecurityException{
+        VASpreadsheet spreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
+        spreadsheet.init();
+        String key1 = spreadsheet.readFirstKey();
+        String key2 = "Book";
+        Assert.assertEquals(key1,key2);
+    }
 }
