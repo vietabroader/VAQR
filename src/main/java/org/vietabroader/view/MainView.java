@@ -9,6 +9,8 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Dimension;
@@ -269,16 +271,31 @@ class MainView extends JFrame {
         return panel;
     }
 
-    private Webcam webcam = null;
-    private WebcamPanel panel = null;
-
     public class MyAction implements ActionListener {
+        private Webcam webcam = null;
+        private WebcamPanel panel = null;
+
         public void actionPerformed(ActionEvent ae){
-            // JOptionPane.showMessageDialog(null, "This is the simple message dialog box.", "Roseindia.net", 1);
+            JFrame frame2 = new JFrame("QR code");
+
+            Dimension size = WebcamResolution.QVGA.getSize();
+
+            frame2.setVisible(true);
+            frame2.setSize(500, 500);
+
+
             Webcam webcam = Webcam.getDefault();
             panel = new WebcamPanel(webcam);
-            add(panel);
-            setVisible(true);
+            panel.setPreferredSize(size);
+
+            frame2.add(panel);
+
+            frame2.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e){
+                    panel.stop();
+                }
+            });
+
         }
     }
 }
