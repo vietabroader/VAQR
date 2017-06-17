@@ -14,7 +14,9 @@ import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 
+import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 
 class MainView extends JFrame {
 
@@ -267,9 +269,16 @@ class MainView extends JFrame {
         return panel;
     }
 
+    private Webcam webcam = null;
+    private WebcamPanel panel = null;
+
     public class MyAction implements ActionListener {
         public void actionPerformed(ActionEvent ae){
-            JOptionPane.showMessageDialog(null, "This is the simple message dialog box.", "Roseindia.net", 1);
+            // JOptionPane.showMessageDialog(null, "This is the simple message dialog box.", "Roseindia.net", 1);
+            Webcam webcam = Webcam.getDefault();
+            panel = new WebcamPanel(webcam);
+            add(panel);
+            setVisible(true);
         }
     }
 }
