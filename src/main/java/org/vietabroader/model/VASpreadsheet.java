@@ -20,56 +20,70 @@ public class VASpreadsheet {
 
     private String spreadsheetId;
     private Spreadsheet spreadSheet;
-    private HashMap<String,String> columnMap;
-    private HashMap<String,List<List<Object>> > contentMap;
-
-    public void init(){
-        columnMap = new HashMap<String, String>();
-        contentMap = new HashMap<String,List<List<Object>>>();
-    }
-
+    private int fromRow;
+    private int toRow;
+    private HashMap<String,String> columnNameToChar;
+    private HashMap<String,List<Object>> cachedColumns;
 
     /**
-     * Read first column character from the sheet/spreadsheet for testing the refreshColumn method
-     * @return The Item column character in the specific row
-     * @throws IOException
-     * @throws GeneralSecurityException
+     * Init the maps
      */
-    public String readFirstColumn() throws IOException, GeneralSecurityException{
-        refreshColumn("A");
-        return columnMap.get("Item");
+    public void init(){
+        columnNameToChar = new HashMap<String, String>();
+        cachedColumns = new HashMap<String,List<Object>>();
     }
+
+    /**
+     * Set the column
+     * @param columnName the name of the column
+     * @param character the character of the column
+     */
+     public void setColumnChar(String columnName, String character){
+         columnNameToChar.put(columnName,character);
+     }
+
+    /**
+     * Set the row
+     * @param rowStart the first row
+     * @param rowEnd the last row
+     */
+     public void setRow(int rowStart, int rowEnd){
+         fromRow = rowStart;
+         toRow = rowEnd;
+     }
 
     /**
      * Read first key from the Item column for testing the refreshColumn method
-     * @return The first key
+     * @param sheetName name of the sheet
+     * @param col name of the column
+     * @return the first key in the column
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    public String readFirstKey() throws IOException, GeneralSecurityException{
-        refreshColumn("A");
-        List<List<Object>> l = contentMap.get("Item");
-        return l.get(1).get(0).toString();
+    public String readFirstKey(String sheetName, String col) throws IOException, GeneralSecurityException{
+        refreshColumn(sheetName,col);
+        List<Object> l = cachedColumns.get(col);
+        return l.get(0).toString();
     }
 
 
     //note: get(a).get(b): a row, b column
 
     /**
-     * Get the column name and content given the character of the column
-     * @param s the character of the column
+     * Get the column name and content given the name of the column
+     * @param col the character of the column
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    public void refreshColumn(String s) throws IOException, GeneralSecurityException{
-        String sheetname = getSheetTitles().get(0);
-        String range = sheetname + "!"+s+":"+s;
+    public void refreshColumn(String sheetName, String col) throws IOException, GeneralSecurityException{
+        String colChar = columnNameToChar.get(col);
+        String range = sheetName + "!" + colChar + fromRow + ":" + colChar + toRow;
         ValueRange response = GoogleAPIUtils.getSheetsService().spreadsheets().values()
                 .get(spreadsheetId, range)
+                .setMajorDimension("COLUMNS")
                 .execute();
         List<List<Object>> values = response.getValues();
-        columnMap.put(values.get(0).get(0).toString(),s);
-        contentMap.put(values.get(0).get(0).toString(),values);
+        cachedColumns.put(col, values.get(0));
     }
 
 
