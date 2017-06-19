@@ -11,11 +11,16 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 
 /*
 Prefix rules:
@@ -26,6 +31,7 @@ spn: JSpinner
 cbb: JComboBox
 pan: JPanel
  */
+
 class MainView extends JFrame {
 
     MainView() {
@@ -282,10 +288,40 @@ class MainView extends JFrame {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        final JButton btnWebcam = new JButton("Start Webcam");
-        panel.add(btnWebcam, c);
+      
+        JButton webcamButton = new JButton("Start Webcam");
+        panel.add(webcamButton, c);
+        webcamButton.addActionListener(new OpenWebcamPanelAction());
 
         return panel;
+    }
+
+    public class OpenWebcamPanelAction implements ActionListener {
+        private Webcam webcam = null;
+        private WebcamPanel panel = null;
+
+        public void actionPerformed(ActionEvent ae){
+            JFrame webcamFrame = new JFrame("QR code");
+
+            Dimension size = WebcamResolution.QVGA.getSize();
+
+            webcamFrame.setVisible(true);
+            webcamFrame.setSize(500, 500);
+
+
+            Webcam webcam = Webcam.getDefault();
+            panel = new WebcamPanel(webcam);
+            panel.setPreferredSize(size);
+
+            webcamFrame.add(panel);
+
+            webcamFrame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e){
+                    panel.stop();
+                }
+            });
+
+        }
     }
 }
 
