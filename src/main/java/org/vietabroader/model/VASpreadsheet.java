@@ -60,10 +60,9 @@ public class VASpreadsheet {
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    public String readFirstKey(String sheetName, String col) throws IOException, GeneralSecurityException{
+    public List<Object> readCol(String sheetName, String col) throws IOException, GeneralSecurityException{
         refreshColumn(sheetName,col);
-        List<Object> l = cachedColumns.get(col);
-        return l.get(0).toString();
+        return cachedColumns.get(col);
     }
 
 
