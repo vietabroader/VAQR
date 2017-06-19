@@ -5,6 +5,7 @@ import org.vietabroader.model.VASpreadsheet;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.ArrayList;
 
 public class VASpreadsheetTest {
 
@@ -37,8 +38,15 @@ public class VASpreadsheetTest {
         spreadsheet.init();
         spreadsheet.setColumnChar("Item","A");
         spreadsheet.setRow(2,4);
-        String key1 = spreadsheet.readFirstKey("Receipt","Item");
-        String key2 = "Book";
-        Assert.assertEquals(key1,key2);
+        List<Object> list1 = spreadsheet.readCol("Receipt","Item");
+        List<Object> list2 = new ArrayList<Object>();
+        list2.add("Book");
+        list2.add("Laptop");
+        list2.add("Desk");
+        Assert.assertEquals(list1.size(),list2.size());
+        for (int i = 0; i < list1.size(); i++){
+            Assert.assertEquals(list1.get(i),list2.get(i));
+        }
+
     }
 }
