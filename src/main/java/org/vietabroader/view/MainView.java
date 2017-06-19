@@ -266,31 +266,31 @@ class MainView extends JFrame {
         c.anchor = GridBagConstraints.CENTER;
         JButton webcamButton = new JButton("Start Webcam");
         panel.add(webcamButton, c);
-        webcamButton.addActionListener(new MyAction());
+        webcamButton.addActionListener(new OpenWebcamPanelAction());
 
         return panel;
     }
 
-    public class MyAction implements ActionListener {
+    public class OpenWebcamPanelAction implements ActionListener {
         private Webcam webcam = null;
         private WebcamPanel panel = null;
 
         public void actionPerformed(ActionEvent ae){
-            JFrame frame2 = new JFrame("QR code");
+            JFrame webcamFrame = new JFrame("QR code");
 
             Dimension size = WebcamResolution.QVGA.getSize();
 
-            frame2.setVisible(true);
-            frame2.setSize(500, 500);
+            webcamFrame.setVisible(true);
+            webcamFrame.setSize(500, 500);
 
 
             Webcam webcam = Webcam.getDefault();
             panel = new WebcamPanel(webcam);
             panel.setPreferredSize(size);
 
-            frame2.add(panel);
+            webcamFrame.add(panel);
 
-            frame2.addWindowListener(new WindowAdapter() {
+            webcamFrame.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e){
                     panel.stop();
                 }
