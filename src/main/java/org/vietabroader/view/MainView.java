@@ -185,7 +185,7 @@ class MainView extends JFrame {
         c.gridx = 1;
         c.weightx = 2 / 6.0;
         c.anchor = GridBagConstraints.CENTER;
-        final JTextField txtRowFrom = new JTextField(5);
+        final JTextField txtRowFrom = new JTextField("1",5);
         txtRowFrom.setInputVerifier(new RowVerifier());
         panel.add(txtRowFrom, c);
 
@@ -195,7 +195,7 @@ class MainView extends JFrame {
 
         c.gridx = 3;
         c.weightx = 2 / 6.0;
-        final JTextField txtRowTo = new JTextField(5);
+        final JTextField txtRowTo = new JTextField("1",5);
         txtRowTo.setInputVerifier(new RowVerifier());
         panel.add(txtRowTo, c);
 
