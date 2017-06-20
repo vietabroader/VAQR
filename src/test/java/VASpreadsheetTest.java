@@ -1,4 +1,5 @@
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vietabroader.model.VASpreadsheet;
 
@@ -12,7 +13,7 @@ import java.util.Objects;
 public class VASpreadsheetTest {
 
     // https://docs.google.com/spreadsheets/d/1tkSzIT2AJT9tXHB9BI8FW8CrZiDCEOnpVtCJtQUrhjI
-    final private String TEST_SPREADSHEET_ID = "1tkSzIT2AJT9tXHB9BI8FW8CrZiDCEOnpVtCJtQUrhjI";
+    final private static String TEST_SPREADSHEET_ID = "1tkSzIT2AJT9tXHB9BI8FW8CrZiDCEOnpVtCJtQUrhjI";
 
     @Test
     public void testConstructVASpreadsheet() throws IOException, GeneralSecurityException {
@@ -27,48 +28,76 @@ public class VASpreadsheetTest {
         spreadsheet.connect();
     }
 
+    private static VASpreadsheet testSpreadsheet;
+
+    @BeforeClass
+    public static void setUpSpreadsheet() {
+        testSpreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
+        try {
+            testSpreadsheet.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testGetSheetTitles() throws IOException, GeneralSecurityException {
-        VASpreadsheet spreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
-        spreadsheet.connect();
-        List<String> titles = spreadsheet.getSheetTitles();
+        List<String> titles = testSpreadsheet.getSheetTitles();
         Assert.assertTrue(titles.contains("Receipt"));
         Assert.assertTrue(titles.contains("Language"));
     }
 
     @Test
-    public void testReadOneColumn() throws IOException, GeneralSecurityException {
-        VASpreadsheet spreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
-        spreadsheet.connect();
+    public void testReadOneColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
 
         String ITEM = "Item";
-        spreadsheet.setSheetName("Receipt")
+        testSpreadsheet.setSheetName("Receipt")
                     .setColumnChar(ITEM, "A")
                     .setRow(2, 4)
                     .refreshOneColumn(ITEM);
 
-        List<Object> itemList = spreadsheet.readCol("Item");
+        List<Object> itemList = testSpreadsheet.readCol("Item");
         assertList(itemList, "Book", "Laptop", "Desk");
     }
 
     @Test
-    public void testReadMultipleColumn() throws IOException, GeneralSecurityException {
-        VASpreadsheet spreadsheet = new VASpreadsheet(TEST_SPREADSHEET_ID);
-        spreadsheet.connect();
-
+    public void testReadMultipleColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
         String PRICE = "Price";
         String QUANTITY = "Quantity";
-        spreadsheet.setSheetName("Receipt")
+        testSpreadsheet.setSheetName("Receipt")
                 .setColumnChar(PRICE, "B")
                 .setColumnChar(QUANTITY, "C")
                 .setRow(2, 4)
                 .refreshAllColumns();
 
-        List<Object> priceList = spreadsheet.readCol(PRICE);
-        List<Object> quantityList = spreadsheet.readCol(QUANTITY);
+        List<Object> priceList = testSpreadsheet.readCol(PRICE);
+        List<Object> quantityList = testSpreadsheet.readCol(QUANTITY);
         assertList(priceList, "$10", "$200", "$100");
         assertList(quantityList, "2", "1", "10");
     }
+
+    @Test(expected = VASpreadsheet.VASpreadsheetException.class)
+    public void testA1ParsingErrorSheetName() throws
+        IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String PRICE = "Price";
+        testSpreadsheet.setSheetName("AaAaAaAaAa")
+                .setColumnChar(PRICE, "B")
+                .setRow(2, 4)
+                .refreshAllColumns();
+    }
+
+    @Test(expected = VASpreadsheet.VASpreadsheetException.class)
+    public void testA1ParsingErrorColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String PRICE = "Price";
+        testSpreadsheet.setSheetName("Receipt")
+                .setColumnChar(PRICE, "@")
+                .setRow(2, 4)
+                .refreshAllColumns();
+    }
+
 
     private void assertList(List<Object> actual, Object... expected) {
         List<Object> expectedList = Arrays.asList(expected);

@@ -99,27 +99,37 @@ public class VASpreadsheet {
      * Get the column name and content given the name of the column
      *
      * @param col the character of the column
-     * @return True if the specified column exists. False otherwise.
      * @throws IOException
      * @throws GeneralSecurityException
+     * @throws VASpreadsheetException
      */
-    public boolean refreshOneColumn(String col) throws IOException, GeneralSecurityException {
+    public void refreshOneColumn(String col) throws IOException, GeneralSecurityException, VASpreadsheetException {
         String colChar = columnNameToChar.get(col);
         if (colChar == null) {
-            return false;
+            throw new VASpreadsheetException("Cannot find column: " + col);
         }
         String range = sheetName + "!" + colChar + fromRow + ":" + colChar + toRow;
-        ValueRange response = GoogleAPIUtils.getSheetsService().spreadsheets().values()
-                .get(spreadsheetId, range)
-                .setMajorDimension("COLUMNS")
-                .execute();
+        try {
+            ValueRange response = GoogleAPIUtils.getSheetsService().spreadsheets().values()
+                    .get(spreadsheetId, range)
+                    .setMajorDimension("COLUMNS")
+                    .execute();
 
-        List<List<Object>> values = response.getValues();
-        cachedColumns.put(col, values.get(0));
-        return true;
+            List<List<Object>> values = response.getValues();
+            cachedColumns.put(col, values.get(0));
+        } catch (Exception e) {
+            throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getMessage());
+        }
     }
 
-    public void refreshAllColumns() throws IOException, GeneralSecurityException {
+    /**
+     * Get the column name and content of all columns
+     *
+     * @throws IOException
+     * @throws GeneralSecurityException
+     * @throws VASpreadsheetException
+     */
+    public void refreshAllColumns() throws IOException, GeneralSecurityException, VASpreadsheetException {
         for (String key : columnNameToChar.keySet()) {
             refreshOneColumn(key);
         }
@@ -137,4 +147,9 @@ public class VASpreadsheet {
         return cachedColumns.get(col);
     }
 
+    public static class VASpreadsheetException extends Exception {
+        public VASpreadsheetException(String msg) {
+            super(msg);
+        }
+    }
 }
