@@ -83,7 +83,6 @@ class MainView extends JFrame {
         }
     }
 
-
     private JPanel createSignInPanel() {
         TitledPanel panel = new TitledPanel("Account");
         panel.setLayout(new GridBagLayout());
@@ -152,7 +151,7 @@ class MainView extends JFrame {
         c.weightx = 5 / 6.0;
         c.fill = GridBagConstraints.HORIZONTAL;
         String[] sheet = {"Sheet1", "Sheet2"};
-        final JComboBox cbbSheet = new JComboBox(sheet);
+        final JComboBox<String> cbbSheet = new JComboBox<>(sheet);
         panel.add(cbbSheet, c);
 
 
@@ -278,17 +277,7 @@ class MainView extends JFrame {
     private JPanel createWebcamPanel() {
         TitledPanel panel = new TitledPanel("Scan QR Code");
         GridBagConstraints c = new GridBagConstraints();
-
-        c.fill = GridBagConstraints.VERTICAL;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.gridheight = GridBagConstraints.RELATIVE;
-        panel.add(new JLabel("Webcam"), c);
-
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-      
         JButton webcamButton = new JButton("Start Webcam");
         panel.add(webcamButton, c);
         webcamButton.addActionListener(new OpenWebcamPanelAction());
@@ -296,31 +285,31 @@ class MainView extends JFrame {
         return panel;
     }
 
-    public class OpenWebcamPanelAction implements ActionListener {
-        private Webcam webcam = null;
-        private WebcamPanel panel = null;
-
+    public static class OpenWebcamPanelAction implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent ae){
-            JFrame webcamFrame = new JFrame("QR code");
-
-            Dimension size = WebcamResolution.QVGA.getSize();
-
-            webcamFrame.setVisible(true);
-            webcamFrame.setSize(500, 500);
-
+            Dimension size = WebcamResolution.VGA.getSize();
 
             Webcam webcam = Webcam.getDefault();
-            panel = new WebcamPanel(webcam);
+            webcam.setViewSize(size);
+
+            WebcamPanel panel = new WebcamPanel(webcam); // Webcam is opened after this point
             panel.setPreferredSize(size);
 
+            JFrame webcamFrame = new JFrame("QR Reader");
             webcamFrame.add(panel);
 
             webcamFrame.addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosing(WindowEvent e){
                     panel.stop();
                 }
             });
 
+            webcamFrame.setResizable(false);
+            webcamFrame.pack();
+            webcamFrame.setLocationRelativeTo(null);
+            webcamFrame.setVisible(true);
         }
     }
 }
