@@ -1,5 +1,6 @@
 package org.vietabroader.model;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
@@ -117,7 +118,7 @@ public class VASpreadsheet {
 
             List<List<Object>> values = response.getValues();
             cachedColumns.put(col, values.get(0));
-        } catch (Exception e) {
+        } catch (GoogleJsonResponseException e) {
             throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getMessage());
         }
     }
@@ -143,7 +144,7 @@ public class VASpreadsheet {
      * @throws GeneralSecurityException
      */
     @Nullable
-    public List<Object> readCol(String col) throws IOException, GeneralSecurityException {
+    public List<Object> readCol(String col) {
         return cachedColumns.get(col);
     }
 
