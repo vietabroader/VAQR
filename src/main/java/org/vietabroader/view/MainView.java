@@ -279,6 +279,7 @@ class MainView extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
         JButton webcamButton = new JButton("Start Webcam");
+        webcamButton.setPreferredSize(new Dimension(150, 60));
         panel.add(webcamButton, c);
         webcamButton.addActionListener(new OpenWebcamPanelAction());
 
