@@ -1,5 +1,7 @@
 package org.vietabroader.view;
 
+import org.vietabroader.model.GlobalState;
+
 import javax.swing.*;
 
 public class Main {
@@ -8,6 +10,8 @@ public class Main {
             @Override
             public void run() {
                 MainView view = new MainView();
+                GlobalState state = new GlobalState();
+                state.addObserver(view);
                 view.setVisible(true);
             }
         });

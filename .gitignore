@@ -136,3 +136,4 @@ fabric.properties
 client_secret.json
 
 .idea/kotlinc.xml
+src/test/resources/

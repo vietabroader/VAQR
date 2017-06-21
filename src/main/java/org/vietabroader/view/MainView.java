@@ -1,6 +1,7 @@
 package org.vietabroader.view;
 
 import org.vietabroader.GoogleAPIUtils;
+import org.vietabroader.model.GlobalState;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
 
@@ -17,6 +18,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
@@ -32,7 +35,14 @@ cbb: JComboBox
 pan: JPanel
  */
 
-class MainView extends JFrame {
+class MainView extends JFrame implements Observer {
+
+    private final String SIGN_IN_BUTTON_TEXT = "Sign in";
+    private final String SIGN_OUT_BUTTON_TEXT = "Sign out";
+    private final String EMAIL_LABEL_TEXT = "Please sign in with your Google account";
+
+    private final JButton btnSignIn = new JButton(SIGN_IN_BUTTON_TEXT);
+    private final JLabel lblEmail = new JLabel(EMAIL_LABEL_TEXT);
 
     MainView() {
         initUI();
@@ -88,9 +98,6 @@ class MainView extends JFrame {
         panel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
-
-        final JButton btnSignIn = new JButton("Sign In");
-        final JLabel lblEmail = new JLabel("Please sign in with your Google account");
 
         btnSignIn.addActionListener(new ActionListener() {
             @Override
@@ -311,6 +318,29 @@ class MainView extends JFrame {
             webcamFrame.pack();
             webcamFrame.setLocationRelativeTo(null);
             webcamFrame.setVisible(true);
+        }
+    }
+
+    /**
+     * Handle app state change
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        GlobalState currentState = (GlobalState) o;
+        GlobalState.Status currentStatus = currentState.getStatus();
+        switch (currentStatus) {
+            case SIGNED_OUT:
+                btnSignIn.setText(SIGN_IN_BUTTON_TEXT);
+                lblEmail.setText(EMAIL_LABEL_TEXT);
+                break;
+            case SIGNED_IN:
+                btnSignIn.setText(SIGN_OUT_BUTTON_TEXT);
+                lblEmail.setText(currentState.getUserEmail());
+                break;
+            case CONNECTED:
+                break;
+            case QR_READING:
+                break;
         }
     }
 }
