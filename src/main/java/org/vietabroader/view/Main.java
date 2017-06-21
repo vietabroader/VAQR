@@ -10,8 +10,7 @@ public class Main {
             @Override
             public void run() {
                 MainView view = new MainView();
-                GlobalState state = new GlobalState();
-                state.addObserver(view);
+                GlobalState.getInstance().addObserver(view);
                 view.setVisible(true);
             }
         });

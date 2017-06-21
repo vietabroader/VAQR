@@ -96,7 +96,7 @@ public class GoogleAPIUtils {
     /**
      * Removes the stored credential on disk.
      */
-    public static void clearStoredCredential() {
+    public static void signOut() {
         cachedCredential = null;
         try {
             FileUtils.deleteDirectory(DATA_STORE_DIR);

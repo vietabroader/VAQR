@@ -1,6 +1,9 @@
 package org.vietabroader.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
+import org.vietabroader.controller.AuthenticationController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
@@ -37,12 +40,17 @@ pan: JPanel
 
 class MainView extends JFrame implements Observer {
 
-    private final String SIGN_IN_BUTTON_TEXT = "Sign in";
-    private final String SIGN_OUT_BUTTON_TEXT = "Sign out";
-    private final String EMAIL_LABEL_TEXT = "Please sign in with your Google account";
+    private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
 
-    private final JButton btnSignIn = new JButton(SIGN_IN_BUTTON_TEXT);
-    private final JLabel lblEmail = new JLabel(EMAIL_LABEL_TEXT);
+    private final String BUTTON_TEXT_SIGN_IN = "Sign In";
+    private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
+    private final String LABEL_TEXT_EMAIL = "Please sign in with your Google account";
+
+    private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
+    private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
+
+    private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
+    private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
 
     MainView() {
         initUI();
@@ -99,26 +107,19 @@ class MainView extends JFrame implements Observer {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        btnSignIn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String email = GoogleAPIUtils.signInAndGetEmail();
-                    lblEmail.setText(email);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        btnAuthenticate.setPreferredSize(BUTTON_DIM_AUTHENTICATE);
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
-        panel.add(btnSignIn, c);
+        panel.add(btnAuthenticate, c);
 
-        lblEmail.setPreferredSize(new Dimension(300, 15));
+        lblEmail.setPreferredSize(LABEL_DIM_EMAIL);
         c.gridx = 1;
         c.gridy = 0;
         panel.add(lblEmail, c);
+
+        AuthenticationController controller = new AuthenticationController();
+        controller.setButtonAuthenticate(btnAuthenticate).control();
 
         return panel;
     }
@@ -326,15 +327,17 @@ class MainView extends JFrame implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
+        logger.debug("Global state changed");
+
         GlobalState currentState = (GlobalState) o;
         GlobalState.Status currentStatus = currentState.getStatus();
         switch (currentStatus) {
             case SIGNED_OUT:
-                btnSignIn.setText(SIGN_IN_BUTTON_TEXT);
-                lblEmail.setText(EMAIL_LABEL_TEXT);
+                btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
+                lblEmail.setText(LABEL_TEXT_EMAIL);
                 break;
             case SIGNED_IN:
-                btnSignIn.setText(SIGN_OUT_BUTTON_TEXT);
+                btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
                 lblEmail.setText(currentState.getUserEmail());
                 break;
             case CONNECTED:
