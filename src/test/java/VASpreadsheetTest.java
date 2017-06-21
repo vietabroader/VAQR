@@ -57,9 +57,23 @@ public class VASpreadsheetTest {
                     .setRow(2, 4)
                     .refreshOneColumn(ITEM);
 
-        List<Object> itemList = testSpreadsheet.readCol("Item");
+        List<Object> itemList = testSpreadsheet.readCol(ITEM);
         assertList(itemList, "Book", "Laptop", "Desk");
     }
+
+    @Test(expected = VASpreadsheet.VASpreadsheetException.class)
+    public void testReadOneColumnWrongColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+
+        String ITEM = "Item";
+        testSpreadsheet.setSheetName("Receipt")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+
+        List<Object> itemList = testSpreadsheet.readCol("ItemX");
+    }
+
 
     @Test
     public void testReadMultipleColumn() throws
@@ -98,6 +112,41 @@ public class VASpreadsheetTest {
                 .refreshAllColumns();
     }
 
+    @Test
+    public void testReadOneValue() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+
+        String ITEM = "Item";
+        testSpreadsheet.setSheetName("Receipt")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+
+        Object item = testSpreadsheet.readValue(ITEM, 0);
+        Assert.assertEquals("Book", item);
+    }
+
+    @Test(expected = VASpreadsheet.VASpreadsheetException.class)
+    public void testReadOneValueWrongColumnName() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String ITEM = "Item";
+        testSpreadsheet.setSheetName("Receipt")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+        testSpreadsheet.readValue("ItemX", 0);
+    }
+
+    @Test(expected = VASpreadsheet.VASpreadsheetException.class)
+    public void testReadOneValueWrongRow() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String ITEM = "Item";
+        testSpreadsheet.setSheetName("Receipt")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+        testSpreadsheet.readValue(ITEM, 999);
+    }
 
     private void assertList(List<Object> actual, Object... expected) {
         List<Object> expectedList = Arrays.asList(expected);

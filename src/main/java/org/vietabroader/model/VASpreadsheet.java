@@ -99,15 +99,16 @@ public class VASpreadsheet {
     /**
      * Get the column name and content given the name of the column
      *
-     * @param col the character of the column
+     * @param colName the character of the column
      * @throws IOException
      * @throws GeneralSecurityException
      * @throws VASpreadsheetException
      */
-    public void refreshOneColumn(String col) throws IOException, GeneralSecurityException, VASpreadsheetException {
-        String colChar = columnNameToChar.get(col);
+    public void refreshOneColumn(String colName) throws
+            IOException, GeneralSecurityException, VASpreadsheetException {
+        String colChar = columnNameToChar.get(colName);
         if (colChar == null) {
-            throw new VASpreadsheetException("Cannot find column: " + col);
+            throw new VASpreadsheetException("Cannot find column name: " + colName);
         }
         String range = sheetName + "!" + colChar + fromRow + ":" + colChar + toRow;
         try {
@@ -117,7 +118,7 @@ public class VASpreadsheet {
                     .execute();
 
             List<List<Object>> values = response.getValues();
-            cachedColumns.put(col, values.get(0));
+            cachedColumns.put(colName, values.get(0));
         } catch (GoogleJsonResponseException e) {
             throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getMessage());
         }
@@ -130,7 +131,8 @@ public class VASpreadsheet {
      * @throws GeneralSecurityException
      * @throws VASpreadsheetException
      */
-    public void refreshAllColumns() throws IOException, GeneralSecurityException, VASpreadsheetException {
+    public void refreshAllColumns() throws
+            IOException, GeneralSecurityException, VASpreadsheetException {
         for (String key : columnNameToChar.keySet()) {
             refreshOneColumn(key);
         }
@@ -138,14 +140,35 @@ public class VASpreadsheet {
 
     /**
      * Read a named column in this cache
-     * @param col name of the column
-     * @return items in specified column. Null if there is no such column
-     * @throws IOException
-     * @throws GeneralSecurityException
+     * @param colName name of the column
+     * @return a list of values in the specified column
+     * @throws VASpreadsheetException when column name does not exist
+     */
+    public List<Object> readCol(String colName) throws VASpreadsheetException {
+        if (!cachedColumns.containsKey(colName)) {
+            throw new VASpreadsheetException("Cannot find column name: " + colName);
+        }
+        return cachedColumns.get(colName);
+    }
+
+    /**
+     * Read a value given its column name and row number
+     * @param colName name of the column
+     * @param row row number
+     * @return a value
+     * @throws VASpreadsheetException when column name does not exist or row number is out of range
      */
     @Nullable
-    public List<Object> readCol(String col) {
-        return cachedColumns.get(col);
+    public Object readValue(String colName, int row) throws VASpreadsheetException {
+        List<Object> col = cachedColumns.get(colName);
+        if (col == null) {
+            throw new VASpreadsheetException("Cannot find column name: " + colName);
+        }
+        if (row < 0 || row >= col.size()) {
+            throw new VASpreadsheetException(
+                    "Row number is out of range. Should be within [0, " + col.size() + ")");
+        }
+        return col.get(row);
     }
 
     public static class VASpreadsheetException extends Exception {
