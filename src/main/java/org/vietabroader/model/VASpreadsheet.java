@@ -31,7 +31,7 @@ public class VASpreadsheet {
     private HashMap<String, List<Object>> cachedColumns = new HashMap<>();
 
     /**
-     * Constructs a new VASpreadsheet object.
+     * Construct a new VASpreadsheet object.
      * @param spreadsheetId id of the spreadsheet. This value can be obtained from the URL to the
      *                      spreadsheet.
      */
@@ -97,7 +97,7 @@ public class VASpreadsheet {
      }
 
     /**
-     * Get the column name and content given the name of the column
+     * Update one column with online data
      *
      * @param colName the character of the column
      * @throws IOException
@@ -125,7 +125,7 @@ public class VASpreadsheet {
     }
 
     /**
-     * Get the column name and content of all columns
+     * Update all column with online data
      *
      * @throws IOException
      * @throws GeneralSecurityException
@@ -140,6 +140,7 @@ public class VASpreadsheet {
 
     /**
      * Read a named column in this cache
+     *
      * @param colName name of the column
      * @return a list of values in the specified column
      * @throws VASpreadsheetException when column name does not exist
@@ -153,6 +154,7 @@ public class VASpreadsheet {
 
     /**
      * Read a value given its column name and row number
+     *
      * @param colName name of the column
      * @param row row number
      * @return a value

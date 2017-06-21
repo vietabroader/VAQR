@@ -5,7 +5,7 @@ import java.util.Observable;
 public class GlobalState extends Observable {
 
     // Singleton Pattern
-    private static GlobalState singleton = new GlobalState( );
+    private static GlobalState singleton = new GlobalState();
 
     /**
      * Make constructor private to prevent others from initiating
@@ -15,7 +15,7 @@ public class GlobalState extends Observable {
         status = Status.SIGNED_OUT;
     }
 
-    public static GlobalState getInstance( ) {
+    public static GlobalState getInstance() {
         return singleton;
     }
 

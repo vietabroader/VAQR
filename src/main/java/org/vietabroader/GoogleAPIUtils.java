@@ -94,18 +94,6 @@ public class GoogleAPIUtils {
     }
 
     /**
-     * Removes the stored credential on disk.
-     */
-    public static void signOut() {
-        cachedCredential = null;
-        try {
-            FileUtils.deleteDirectory(DATA_STORE_DIR);
-        } catch (IOException e) {
-            logger.warn("No stored credential found");
-        }
-    }
-
-    /**
      * Opens browser and asks for user name and password if not already signed in.
      * @return Email of the signed in user
      */
@@ -117,6 +105,18 @@ public class GoogleAPIUtils {
         logger.info("Retrieving user email...");
         Userinfoplus userinfo = oauth2.userinfo().get().execute();
         return userinfo.getEmail();
+    }
+
+    /**
+     * Removes the stored credential on disk.
+     */
+    public static void signOut() {
+        cachedCredential = null;
+        try {
+            FileUtils.deleteDirectory(DATA_STORE_DIR);
+        } catch (IOException e) {
+            logger.warn("No stored credential found");
+        }
     }
 
     /**
