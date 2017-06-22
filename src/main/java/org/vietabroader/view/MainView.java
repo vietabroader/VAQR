@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
+import org.vietabroader.controller.ConnectController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
@@ -140,6 +141,9 @@ class MainView extends JFrame implements Observer {
         c.gridx = 2;
         final JButton btnConnect = new JButton("Connect");
         panel.add(btnConnect);
+
+        ConnectController controller = new ConnectController();
+        controller.setConnect(btnConnect, txtSpreadsheetID).control();
 
         return panel;
     }
