@@ -68,16 +68,16 @@ class MainView extends JFrame implements Observer {
         c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
         panelMain.add(createSignInPanel(), c);
 
-        c.gridy = 2;
+        c.gridy = 3;
         panelMain.add(createSpreadsheetPanel(), c);
 
-        c.gridy = 3;
+        c.gridy = 4;
         panelMain.add(createWorkspacePanel(), c);
 
-        c.gridy = 4;
+        c.gridy = 5;
         panelMain.add(createColumnPanel(), c);
 
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 1;
         c.gridx = 0;
         panelMain.add(createGeneratePanel(), c);
@@ -140,6 +140,11 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 2;
         final JButton btnConnect = new JButton("Connect");
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lblNoti = new JLabel("Notification");
+        panel.add(lblNoti, c);
+
         panel.add(btnConnect);
 
         SpreadsheetConnectController controller = new SpreadsheetConnectController();
@@ -149,6 +154,7 @@ class MainView extends JFrame implements Observer {
 
         return panel;
     }
+
 
     private JPanel createWorkspacePanel() {
         TitledPanel panel = new TitledPanel("Workspace");
@@ -229,7 +235,7 @@ class MainView extends JFrame implements Observer {
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 1 / 4.0;
+        c.weightx = 1 / 6;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
@@ -247,6 +253,13 @@ class MainView extends JFrame implements Observer {
         c.gridx = 3;
         final JPanel panOutput = createOneColumn("Output");
         panel.add(panOutput, c);
+
+        c.gridx = 5;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = 2 / 6;
+        final JButton btnRefresh = new JButton("Refresh");
+        panel.add(btnRefresh, c);
+
         return panel;
     }
 
@@ -301,6 +314,11 @@ class MainView extends JFrame implements Observer {
         webcamButton.setPreferredSize(new Dimension(150, 60));
         panel.add(webcamButton, c);
         webcamButton.addActionListener(new OpenWebcamPanelAction());
+
+        c.fill = GridBagConstraints.BOTH;
+        c.gridy = 1;
+        JLabel lblWebcam = new JLabel("Webcam");
+        panel.add(lblWebcam, c);
 
         return panel;
     }
