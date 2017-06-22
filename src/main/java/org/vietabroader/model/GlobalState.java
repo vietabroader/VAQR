@@ -28,6 +28,7 @@ public class GlobalState extends Observable {
 
     private Status status;
     private String userEmail;
+    private VASpreadsheet spreadsheet;
 
     public Status getStatus() {
         return status;
@@ -43,8 +44,17 @@ public class GlobalState extends Observable {
         return userEmail;
     }
 
+    public VASpreadsheet getSpreadsheet() {
+        return spreadsheet;
+    }
+
     public void setUserEmail(String email) {
         userEmail = email;
+        setChanged();
+    }
+
+    public void setSpreadsheet(VASpreadsheet input) {
+        spreadsheet = input;
         setChanged();
     }
 }
