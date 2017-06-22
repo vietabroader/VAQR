@@ -50,6 +50,7 @@ class MainView extends JFrame implements Observer {
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
 
+
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
     private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
 
@@ -72,14 +73,28 @@ class MainView extends JFrame implements Observer {
         panelMain.add(createSpreadsheetPanel(), c);
 
         c.gridy = 3;
-        panelMain.add(createWorkspacePanel(), c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lblNoti = new JLabel("Notification");
+        panelMain.add(lblNoti, c);
 
         c.gridy = 4;
-        panelMain.add(createColumnPanel(), c);
+        panelMain.add(createWorkspacePanel(), c);
 
         c.gridy = 5;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
+        panelMain.add(createColumnPanel(), c);
+
+        c.gridx = 1;
+        JButton btnRefresh = new JButton("Refresh");
+        c.anchor = GridBagConstraints.LINE_END;
+        btnRefresh.setPreferredSize(new Dimension(120, 50));
+        panelMain.add(btnRefresh, c);
+
+        c.gridy = 6;
         c.gridwidth = 1;
         c.gridx = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panelMain.add(createGeneratePanel(), c);
 
         c.gridx = 1;
@@ -140,10 +155,6 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 2;
         final JButton btnConnect = new JButton("Connect");
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        JLabel lblNoti = new JLabel("Notification");
-        panel.add(lblNoti, c);
 
         panel.add(btnConnect);
 
@@ -235,7 +246,7 @@ class MainView extends JFrame implements Observer {
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 1 / 6;
+        c.weightx = 1 / 4;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
@@ -253,12 +264,6 @@ class MainView extends JFrame implements Observer {
         c.gridx = 3;
         final JPanel panOutput = createOneColumn("Output");
         panel.add(panOutput, c);
-
-        c.gridx = 5;
-        c.anchor = GridBagConstraints.CENTER;
-        c.weightx = 2 / 6;
-        final JButton btnRefresh = new JButton("Refresh");
-        panel.add(btnRefresh, c);
 
         return panel;
     }
@@ -315,11 +320,6 @@ class MainView extends JFrame implements Observer {
         panel.add(webcamButton, c);
         webcamButton.addActionListener(new OpenWebcamPanelAction());
 
-        c.fill = GridBagConstraints.BOTH;
-        c.gridy = 1;
-        JLabel lblWebcam = new JLabel("Webcam");
-        panel.add(lblWebcam, c);
-
         return panel;
     }
 
@@ -334,8 +334,21 @@ class MainView extends JFrame implements Observer {
             WebcamPanel panel = new WebcamPanel(webcam); // Webcam is opened after this point
             panel.setPreferredSize(size);
 
+            JPanel panWebcam = new JPanel();
+            panWebcam.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            c.gridx = 0;
+            c.gridy = 0;
+            panWebcam.add(panel, c);
+
+            c.gridy = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            JLabel lblWebcam = new JLabel("Webcam");
+            panWebcam.add(lblWebcam, c);
+
             JFrame webcamFrame = new JFrame("QR Reader");
-            webcamFrame.add(panel);
+            webcamFrame.add(panWebcam);
 
             webcamFrame.addWindowListener(new WindowAdapter() {
                 @Override
