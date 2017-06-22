@@ -68,16 +68,16 @@ class MainView extends JFrame implements Observer {
         c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
         panelMain.add(createSignInPanel(), c);
 
-        c.gridy = 3;
+        c.gridy = 2;
         panelMain.add(createSpreadsheetPanel(), c);
 
-        c.gridy = 4;
+        c.gridy = 3;
         panelMain.add(createWorkspacePanel(), c);
 
-        c.gridy = 5;
+        c.gridy = 4;
         panelMain.add(createColumnPanel(), c);
 
-        c.gridy = 6;
+        c.gridy = 5;
         c.gridwidth = 1;
         c.gridx = 0;
         panelMain.add(createGeneratePanel(), c);
