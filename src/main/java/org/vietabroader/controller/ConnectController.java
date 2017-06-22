@@ -15,9 +15,14 @@ public class ConnectController implements Controller {
 
     private JButton btnConnect;
     private JTextField txtConnect;
+    private static final Logger logger = LoggerFactory.getLogger(ConnectController.class);
 
-    public ConnectController setConnect(JButton btn, JTextField txt) {
+    public ConnectController setConnectButton(JButton btn) {
         btnConnect = btn;
+        return this;
+    }
+
+    public ConnectController setTextSpreadsheetID(JTextField txt) {
         txtConnect = txt;
         return this;
     }
@@ -39,6 +44,7 @@ public class ConnectController implements Controller {
                         currentState.setStatus(GlobalState.Status.CONNECTED);
                         currentState.setSpreadsheet(spreadsheet);
 
+                        logger.info("Sheet connected");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

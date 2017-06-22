@@ -143,7 +143,9 @@ class MainView extends JFrame implements Observer {
         panel.add(btnConnect);
 
         ConnectController controller = new ConnectController();
-        controller.setConnect(btnConnect, txtSpreadsheetID).control();
+        controller.setConnectButton(btnConnect)
+                .setTextSpreadsheetID(txtSpreadsheetID)
+                .control();
 
         return panel;
     }
