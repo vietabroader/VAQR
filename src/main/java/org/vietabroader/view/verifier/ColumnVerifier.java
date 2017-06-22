@@ -14,9 +14,12 @@ public class ColumnVerifier extends InputVerifier {
     public boolean shouldYieldFocus(JComponent input) {
         boolean inputOK = verify(input);
         if (inputOK) {
+            input.setForeground(Color.black);
             return true;
         } else {
             Toolkit.getDefaultToolkit().beep();
+            input.setForeground(Color.red);
+            input.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
             return false;
         }
     }
