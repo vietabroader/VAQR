@@ -85,16 +85,10 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.LINE_START;
         panelMain.add(createColumnPanel(), c);
 
-        c.gridx = 1;
-        JButton btnRefresh = new JButton("Refresh");
-        c.anchor = GridBagConstraints.LINE_END;
-        btnRefresh.setPreferredSize(new Dimension(120, 50));
-        panelMain.add(btnRefresh, c);
-
         c.gridy = 6;
         c.gridwidth = 1;
         c.gridx = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
         panelMain.add(createGeneratePanel(), c);
 
         c.gridx = 1;
@@ -243,6 +237,7 @@ class MainView extends JFrame implements Observer {
     }
 
     private JPanel createColumnPanel() {
+        JPanel panelMain = new JPanel();
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
@@ -265,7 +260,16 @@ class MainView extends JFrame implements Observer {
         final JPanel panOutput = createOneColumn("Output");
         panel.add(panOutput, c);
 
-        return panel;
+        c = new GridBagConstraints();
+        panelMain.add(panel, c);
+
+        c.gridx = 1;
+        JButton btnRefresh = new JButton("Refresh");
+        c.anchor = GridBagConstraints.LINE_END;
+        btnRefresh.setPreferredSize(new Dimension(120, 50));
+        panelMain.add(btnRefresh, c);
+
+        return panelMain;
     }
 
     private JPanel createOneColumn(String label) {
