@@ -3,7 +3,7 @@ package org.vietabroader.view.verifier;
 import javax.swing.*;
 import java.awt.*;
 
-public class RowVerifier extends InputVerifier {
+public class RowVerifier extends SheetVerifier {
     @Override
     public boolean verify(JComponent input) {
         JTextField txt = (JTextField) input;
@@ -14,17 +14,4 @@ public class RowVerifier extends InputVerifier {
         }
     }
 
-    @Override
-    public boolean shouldYieldFocus(JComponent input) {
-        boolean inputOK = verify(input);
-        if (inputOK) {
-            input.setForeground(Color.black);
-            return true;
-        } else {
-            Toolkit.getDefaultToolkit().beep();
-            input.setForeground(Color.red);
-            input.setToolTipText("Enter a positive integer");
-            return false;
-        }
-    }
 }
