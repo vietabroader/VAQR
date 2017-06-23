@@ -176,6 +176,7 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         final JTextField txtColFrom = new JTextField("A",5);
         txtColFrom.setInputVerifier(new ColumnVerifier());
+        txtColFrom.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
         panel.add(txtColFrom, c);
 
         c.gridx = 2;
@@ -186,6 +187,7 @@ class MainView extends JFrame implements Observer {
         c.weightx = 2 / 6.0;
         final JTextField txtColTo = new JTextField("A",5);
         txtColTo.setInputVerifier(new ColumnVerifier());
+        txtColTo.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
         panel.add(txtColTo, c);
 
         c = new GridBagConstraints();
@@ -200,6 +202,7 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         final JTextField txtRowFrom = new JTextField("1",5);
         txtRowFrom.setInputVerifier(new RowVerifier());
+        txtRowFrom.setToolTipText("Enter a positive integer");
         panel.add(txtRowFrom, c);
 
         c.gridx = 2;
@@ -210,6 +213,7 @@ class MainView extends JFrame implements Observer {
         c.weightx = 2 / 6.0;
         final JTextField txtRowTo = new JTextField("1",5);
         txtRowTo.setInputVerifier(new RowVerifier());
+        txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
 
         return panel;
@@ -255,6 +259,7 @@ class MainView extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         final JTextField txtCol = new JTextField("A",5);
         txtCol.setInputVerifier(new ColumnVerifier());
+        txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
         panel.add(txtCol, c);
 
         return panel;
