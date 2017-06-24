@@ -3,12 +3,7 @@ package org.vietabroader.view.verifier;
 import javax.swing.*;
 import java.awt.*;
 
-public class SheetVerifier extends InputVerifier {
-    @Override
-    public boolean verify(JComponent input) {
-        return true;
-    }
-
+public abstract class TextVerifier extends InputVerifier {
     @Override
     public boolean shouldYieldFocus(JComponent input) {
         boolean inputOK = verify(input);

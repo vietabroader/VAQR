@@ -3,7 +3,7 @@ package org.vietabroader.view.verifier;
 import javax.swing.*;
 import java.awt.*;
 
-public class ColumnVerifier extends SheetVerifier {
+public class ColumnVerifier extends TextVerifier {
     @Override
     public boolean verify(JComponent input) {
         JTextField txt = (JTextField) input;
