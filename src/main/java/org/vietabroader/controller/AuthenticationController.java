@@ -34,9 +34,11 @@ public class AuthenticationController implements Controller {
                         ex.printStackTrace();
                     }
                 }
-                else if (currentState.getStatus() == GlobalState.Status.SIGNED_IN) {
+                else if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
+                        || currentState.getStatus() == GlobalState.Status.CONNECTED) {
                     GoogleAPIUtils.signOut();
                     currentState.setStatus(GlobalState.Status.SIGNED_OUT);
+                    currentState.setUserEmail("");
                 }
             }
         });
