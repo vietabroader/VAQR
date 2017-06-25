@@ -32,17 +32,19 @@ public class SpreadsheetConnectController implements Controller {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlobalState currentState = GlobalState.getInstance();
-                try {
-                    VASpreadsheet spreadsheet = new VASpreadsheet(txtConnect.getText());
-                    spreadsheet.connect();
+                if (currentState.getStatus() == GlobalState.Status.SIGNED_IN || currentState.getStatus() == GlobalState.Status.CONNECTED) {
+                    try {
+                        VASpreadsheet spreadsheet = new VASpreadsheet(txtConnect.getText());
+                        spreadsheet.connect();
 
-                    currentState.setStatus(GlobalState.Status.CONNECTED);
-                    currentState.setSpreadsheet(spreadsheet);
+                        currentState.setStatus(GlobalState.Status.CONNECTED);
+                        currentState.setSpreadsheet(spreadsheet);
 
-                    logger.info("Sheet " + spreadsheet.getSpreadsheetTitle() + "connected");
-                } catch (Exception ex) {
-                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
-                    ex.printStackTrace();
+                        logger.info("Sheet " + spreadsheet.getSpreadsheetTitle() + "connected");
+                    } catch (Exception ex) {
+                        currentState.setStatus(GlobalState.Status.SIGNED_IN);
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
