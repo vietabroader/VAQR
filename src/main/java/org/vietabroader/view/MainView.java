@@ -6,6 +6,7 @@ import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
 import org.vietabroader.controller.SpreadsheetConnectController;
 import org.vietabroader.model.GlobalState;
+import org.vietabroader.model.VASpreadsheet;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
 
@@ -17,8 +18,9 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
+import java.util.List;
 import java.util.Observer;
+import java.util.Observable;
 
 /*
 Main view of the app. This view observes the changes in GlobalState singleton.
@@ -49,6 +51,7 @@ class MainView extends JFrame implements Observer {
     private final JTextField txtSpreadsheetID = new JTextField(15);
     private final JLabel lblSpreadsheetMessage = new JLabel(" ");
     private final JLabel lblSheetMessage = new JLabel(" ");
+    private final JComboBox<String> cbbSheet = new JComboBox<>();
 
     MainView() {
         initUI();
@@ -173,8 +176,6 @@ class MainView extends JFrame implements Observer {
         c.gridwidth = 3;
         c.weightx = 5 / 6.0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        String[] sheet = {"Sheet1", "Sheet2"};
-        final JComboBox<String> cbbSheet = new JComboBox<>(sheet);
         panel.add(cbbSheet, c);
 
 
@@ -362,10 +363,14 @@ class MainView extends JFrame implements Observer {
                 lblEmail.setText(currentState.getUserEmail());
                 break;
             case CONNECTED:
-                String spreadsheetTitle = currentState.getSpreadsheet().getSpreadsheetTitle();
+                VASpreadsheet currentSpreadsheet = currentState.getSpreadsheet();
+                String spreadsheetTitle = currentSpreadsheet.getSpreadsheetTitle();
                 lblSpreadsheetMessage.setBackground(Color.GREEN);
                 lblSpreadsheetMessage.setForeground(Color.BLACK);
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
+
+                List<String> sheets = currentSpreadsheet.getSheetTitles();
+                sheets.forEach(cbbSheet::addItem);
                 break;
             case QR_READING:
                 break;
