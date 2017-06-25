@@ -1,5 +1,7 @@
 package org.vietabroader.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.model.GlobalState;
 
@@ -8,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AuthenticationController implements Controller {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private JButton btnAuthenticate;
 
@@ -27,9 +31,9 @@ public class AuthenticationController implements Controller {
                     currentState.setStatus(GlobalState.Status.SIGNED_IN);
                 } catch (Exception ex) {
                     // Ensure that we are signed out when there is error
+                    GoogleAPIUtils.signOut();
                     currentState.setStatus(GlobalState.Status.SIGNED_OUT);
-                    // TODO: Report error on the UI
-                    ex.printStackTrace();
+                    logger.error("Cannot sign in", ex);
                 }
             }
             else if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
