@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
 import org.vietabroader.controller.SpreadsheetConnectController;
+import org.vietabroader.controller.WebcamController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
@@ -322,50 +323,12 @@ class MainView extends JFrame implements Observer {
         JButton webcamButton = new JButton("Start Webcam");
         webcamButton.setPreferredSize(new Dimension(150, 60));
         panel.add(webcamButton, c);
-        webcamButton.addActionListener(new OpenWebcamPanelAction());
+
+        WebcamController webcamController = new WebcamController();
+        webcamController.setButtonWebcam(webcamButton)
+                .control();
 
         return panel;
-    }
-
-    public static class OpenWebcamPanelAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent ae){
-            Dimension size = WebcamResolution.VGA.getSize();
-
-            Webcam webcam = Webcam.getDefault();
-            webcam.setViewSize(size);
-
-            WebcamPanel panel = new WebcamPanel(webcam); // Webcam is opened after this point
-            panel.setPreferredSize(size);
-
-            JPanel panWebcam = new JPanel();
-            panWebcam.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridx = 0;
-            c.gridy = 0;
-            panWebcam.add(panel, c);
-
-            c.gridy = 1;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            JLabel lblWebcam = new JLabel("Webcam");
-            panWebcam.add(lblWebcam, c);
-
-            JFrame webcamFrame = new JFrame("QR Reader");
-            webcamFrame.add(panWebcam);
-
-            webcamFrame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e){
-                    panel.stop();
-                }
-            });
-
-            webcamFrame.setResizable(false);
-            webcamFrame.pack();
-            webcamFrame.setLocationRelativeTo(null);
-            webcamFrame.setVisible(true);
-        }
     }
 
     /**
