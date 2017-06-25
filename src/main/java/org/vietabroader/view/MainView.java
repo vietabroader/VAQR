@@ -53,7 +53,7 @@ class MainView extends JFrame implements Observer {
 
     MainView() {
         initUI();
-        resetMessages();
+        resetOnSignedOut();
         initControllers();
     }
 
@@ -335,7 +335,7 @@ class MainView extends JFrame implements Observer {
         return panel;
     }
 
-    private void resetMessages() {
+    private void resetOnSignedOut() {
         lblSpreadsheetMessage.setBackground(Color.LIGHT_GRAY);
         lblSpreadsheetMessage.setForeground(Color.BLACK);
         lblSpreadsheetMessage.setText(" ");
@@ -343,6 +343,8 @@ class MainView extends JFrame implements Observer {
         lblSheetMessage.setBackground(Color.LIGHT_GRAY);
         lblSheetMessage.setForeground(Color.BLACK);
         lblSheetMessage.setText(" ");
+
+        cbbSheet.removeAllItems();
     }
 
     /**
@@ -358,7 +360,7 @@ class MainView extends JFrame implements Observer {
             case SIGNED_OUT:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
                 lblEmail.setText(LABEL_TEXT_EMAIL);
-                resetMessages();
+                resetOnSignedOut();
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
@@ -372,6 +374,7 @@ class MainView extends JFrame implements Observer {
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
 
                 List<String> sheets = currentSpreadsheet.getSheetTitles();
+                cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
                 break;
             case QR_READING:

@@ -1,5 +1,6 @@
 package org.vietabroader.controller;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
 
@@ -37,17 +38,18 @@ public class SpreadsheetConnectController implements Controller {
     @Override
     public void control() {
         btnSpreadsheetConnect.addActionListener(e -> {
-            String spreadsheetId = txtSpreadsheetConnect.getText().trim();
-            if (spreadsheetId.isEmpty()) {
-                lblSpreadsheetMessage.setBackground(Color.YELLOW);
-                lblSpreadsheetMessage.setForeground(Color.BLACK);
-                lblSpreadsheetMessage.setText("Please enter a spreadsheet Id");
-                return;
-            }
 
             GlobalState currentState = GlobalState.getInstance();
             if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
                     || currentState.getStatus() == GlobalState.Status.CONNECTED) {
+                String spreadsheetId = txtSpreadsheetConnect.getText().trim();
+                if (spreadsheetId.isEmpty()) {
+                    lblSpreadsheetMessage.setBackground(Color.YELLOW);
+                    lblSpreadsheetMessage.setForeground(Color.BLACK);
+                    lblSpreadsheetMessage.setText("Please enter a spreadsheet Id.");
+                    return;
+                }
+                boolean hasError = false;
                 try {
                     VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
                     spreadsheet.connect();
@@ -57,13 +59,22 @@ public class SpreadsheetConnectController implements Controller {
 
                     String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
                     logger.debug("Connected to sheet: " + spreadsheetTitle);
-
-                } catch (Exception ex) {
+                }
+                catch (GoogleJsonResponseException ex) {
                     currentState.setStatus(GlobalState.Status.SIGNED_IN);
+                    hasError = true;
+                    lblSpreadsheetMessage.setText(ex.getDetails().getMessage());
+                    logger.error("Error while loading spreadsheet", ex);
+                }
+                catch (Exception ex) {
+                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
+                    hasError = true;
+                    lblSpreadsheetMessage.setText("Cannot connect to the spreadsheet.");
+                    logger.error("Error while loading spreadsheet", ex);
+                }
+                if (hasError) {
                     lblSpreadsheetMessage.setBackground(Color.RED);
                     lblSpreadsheetMessage.setForeground(Color.WHITE);
-                    lblSpreadsheetMessage.setText("Cannot connect to the spreadsheet");
-                    logger.error("Error while loading spreadsheet", ex);
                 }
             }
         });

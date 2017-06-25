@@ -119,7 +119,7 @@ public class VASpreadsheet {
             List<List<Object>> values = response.getValues();
             cachedColumns.put(colName, values.get(0));
         } catch (GoogleJsonResponseException e) {
-            throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getMessage());
+            throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getDetails().getMessage());
         }
     }
 
