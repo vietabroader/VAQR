@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.sun.istack.internal.Nullable;
 import org.vietabroader.GoogleAPIUtils;
 
 import java.io.IOException;
@@ -160,7 +159,6 @@ public class VASpreadsheet {
      * @return a value
      * @throws VASpreadsheetException when column name does not exist or row number is out of range
      */
-    @Nullable
     public Object readValue(String colName, int row) throws VASpreadsheetException {
         List<Object> col = cachedColumns.get(colName);
         if (col == null) {
