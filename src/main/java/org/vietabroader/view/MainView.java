@@ -247,6 +247,7 @@ class MainView extends JFrame implements Observer {
 
         c.gridx = 1;
         final JPanel panSecret = createOneColumn("Secret");
+        panSecret.setEnabled(false);
         panel.add(panSecret, c);
 
         c.gridx = 2;
@@ -270,7 +271,14 @@ class MainView extends JFrame implements Observer {
     }
 
     private JPanel createOneColumn(String label) {
-        JPanel panel = new JPanel();
+        final JTextField txtCol = new JTextField("A",5);
+        JPanel panel = new JPanel() {
+            @Override
+            public void setEnabled(boolean enabled) {
+                super.setEnabled(enabled);
+                txtCol.setEnabled(enabled);
+            }
+        };
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -282,7 +290,6 @@ class MainView extends JFrame implements Observer {
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        final JTextField txtCol = new JTextField("A",5);
         txtCol.setInputVerifier(new ColumnVerifier());
         txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
         panel.add(txtCol, c);
