@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
 import org.vietabroader.controller.SpreadsheetConnectController;
-import org.vietabroader.controller.WebcamController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
@@ -15,20 +14,14 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
-
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
 
 /*
 Prefix rules:
@@ -47,6 +40,7 @@ class MainView extends JFrame implements Observer {
     private final String BUTTON_TEXT_SIGN_IN = "Sign In";
     private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
     private final String LABEL_TEXT_EMAIL = "Please sign in with your Google account";
+    private final String BUTTON_TEXT_CONNECT = "Connect";
 
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
@@ -54,9 +48,12 @@ class MainView extends JFrame implements Observer {
 
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
     private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
+    private final JButton btnConnect = new JButton(BUTTON_TEXT_CONNECT);
+    private final JTextField txtSpreadsheetID = new JTextField(15);
 
     MainView() {
         initUI();
+        initControllers();
     }
 
     private void initUI() {
@@ -65,11 +62,13 @@ class MainView extends JFrame implements Observer {
         getContentPane().add(panelMain);
         GridBagConstraints c = new GridBagConstraints();
 
+        // Sign in panel
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
         panelMain.add(createSignInPanel(), c);
 
+        // Spreadsheet connect panel
         c.gridy = 2;
         panelMain.add(createSpreadsheetPanel(), c);
 
@@ -78,6 +77,7 @@ class MainView extends JFrame implements Observer {
         JLabel lblNoti = new JLabel("Notification");
         panelMain.add(lblNoti, c);
 
+        // Sheet workspace panel
         c.gridy = 4;
         panelMain.add(createWorkspacePanel(), c);
 
@@ -86,6 +86,7 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.LINE_START;
         panelMain.add(createColumnPanel(), c);
 
+        // QR generating and reading panel
         c.gridy = 6;
         c.gridwidth = 1;
         c.gridx = 0;
@@ -95,11 +96,11 @@ class MainView extends JFrame implements Observer {
         c.gridx = 1;
         panelMain.add(createWebcamPanel(), c);
 
-        setTitle("VAQR");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
-        pack();
-        setLocationRelativeTo(null);
+        this.setTitle("VAQR");
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.pack();
+        this.setLocationRelativeTo(null);
     }
 
     private class TitledPanel extends JPanel {
@@ -129,9 +130,6 @@ class MainView extends JFrame implements Observer {
         c.gridy = 0;
         panel.add(lblEmail, c);
 
-        AuthenticationController controller = new AuthenticationController();
-        controller.setButtonAuthenticate(btnAuthenticate).control();
-
         return panel;
     }
 
@@ -144,7 +142,6 @@ class MainView extends JFrame implements Observer {
 
         c.gridx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        final JTextField txtSpreadsheetID = new JTextField(15);
         panel.add(txtSpreadsheetID, c);
 
         c.anchor = GridBagConstraints.CENTER;
@@ -152,11 +149,6 @@ class MainView extends JFrame implements Observer {
         final JButton btnConnect = new JButton("Connect");
 
         panel.add(btnConnect);
-
-        SpreadsheetConnectController controller = new SpreadsheetConnectController();
-        controller.setConnectButton(btnConnect)
-                .setTextSpreadsheetID(txtSpreadsheetID)
-                .control();
 
         return panel;
     }
@@ -320,13 +312,17 @@ class MainView extends JFrame implements Observer {
         TitledPanel panel = new TitledPanel("Scan QR Code");
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
-        JButton webcamButton = new JButton("Start Webcam");
-        webcamButton.setPreferredSize(new Dimension(150, 60));
-        panel.add(webcamButton, c);
+        JButton btnWebcam = new JButton("Start Webcam");
+        btnWebcam.setPreferredSize(new Dimension(150, 60));
+        panel.add(btnWebcam, c);
 
-        WebcamController webcamController = new WebcamController();
-        webcamController.setButtonWebcam(webcamButton)
-                .control();
+        btnWebcam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WebcamView camView = new WebcamView();
+                camView.setVisible(true);
+            }
+        });
 
         return panel;
     }
@@ -354,6 +350,16 @@ class MainView extends JFrame implements Observer {
             case QR_READING:
                 break;
         }
+    }
+
+    private void initControllers() {
+        AuthenticationController authController = new AuthenticationController();
+        authController.setButtonAuthenticate(btnAuthenticate).control();
+
+        SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
+        spreadSheetConnectController.setConnectButton(btnConnect)
+                .setTextSpreadsheetID(txtSpreadsheetID)
+                .control();
     }
 }
 
