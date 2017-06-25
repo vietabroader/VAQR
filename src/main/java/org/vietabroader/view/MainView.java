@@ -14,10 +14,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Dimension;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -45,11 +42,12 @@ class MainView extends JFrame implements Observer {
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
 
-
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
     private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
     private final JButton btnConnect = new JButton(BUTTON_TEXT_CONNECT);
     private final JTextField txtSpreadsheetID = new JTextField(15);
+    private final JLabel lblSpreadsheetMessage = new JLabel("Spreadsheet message");
+    private final JLabel lblSheetMessage = new JLabel("Sheet message");
 
     MainView() {
         initUI();
@@ -74,8 +72,8 @@ class MainView extends JFrame implements Observer {
 
         c.gridy = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-        JLabel lblNoti = new JLabel("Notification");
-        panelMain.add(lblNoti, c);
+        lblSpreadsheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        panelMain.add(lblSpreadsheetMessage, c);
 
         // Sheet workspace panel
         c.gridy = 4;
@@ -86,8 +84,13 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.LINE_START;
         panelMain.add(createColumnPanel(), c);
 
-        // QR generating and reading panel
         c.gridy = 6;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        lblSheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        panelMain.add(lblSheetMessage, c);
+
+        // QR generating and reading panel
+        c.gridy = 7;
         c.gridwidth = 1;
         c.gridx = 0;
         c.fill = GridBagConstraints.BOTH;

@@ -15,7 +15,7 @@ public class WebcamView extends JFrame {
 
     private final Webcam webcam = Webcam.getDefault();
     private WebcamPanel webcamPanel;
-    private final JLabel lblWebcam = new JLabel("Webcam");
+    private final JLabel lblWebcamMessage = new JLabel("Webcam message");
 
     WebcamView() {
         initUI();
@@ -40,7 +40,8 @@ public class WebcamView extends JFrame {
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        panWebcam.add(lblWebcam, c);
+        lblWebcamMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        panWebcam.add(lblWebcamMessage, c);
 
         // Configure the frame
         this.setTitle("QR Reader");
