@@ -322,12 +322,9 @@ class MainView extends JFrame implements Observer {
         btnWebcam.setPreferredSize(new Dimension(150, 60));
         panel.add(btnWebcam, c);
 
-        btnWebcam.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WebcamView camView = new WebcamView();
-                camView.setVisible(true);
-            }
+        btnWebcam.addActionListener(e -> {
+            WebcamView camView = new WebcamView();
+            camView.setVisible(true);
         });
 
         return panel;

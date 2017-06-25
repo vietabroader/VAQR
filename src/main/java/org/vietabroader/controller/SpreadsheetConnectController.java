@@ -36,37 +36,34 @@ public class SpreadsheetConnectController implements Controller {
 
     @Override
     public void control() {
-        btnSpreadsheetConnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String spreadsheetId = txtSpreadsheetConnect.getText().trim();
-                if (spreadsheetId.isEmpty()) {
-                    lblSpreadsheetMessage.setBackground(Color.YELLOW);
-                    lblSpreadsheetMessage.setForeground(Color.BLACK);
-                    lblSpreadsheetMessage.setText("Please enter a spreadsheet Id");
-                    return;
-                }
+        btnSpreadsheetConnect.addActionListener(e -> {
+            String spreadsheetId = txtSpreadsheetConnect.getText().trim();
+            if (spreadsheetId.isEmpty()) {
+                lblSpreadsheetMessage.setBackground(Color.YELLOW);
+                lblSpreadsheetMessage.setForeground(Color.BLACK);
+                lblSpreadsheetMessage.setText("Please enter a spreadsheet Id");
+                return;
+            }
 
-                GlobalState currentState = GlobalState.getInstance();
-                if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
-                        || currentState.getStatus() == GlobalState.Status.CONNECTED) {
-                    try {
-                        VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
-                        spreadsheet.connect();
+            GlobalState currentState = GlobalState.getInstance();
+            if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
+                    || currentState.getStatus() == GlobalState.Status.CONNECTED) {
+                try {
+                    VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
+                    spreadsheet.connect();
 
-                        currentState.setSpreadsheet(spreadsheet);
-                        currentState.setStatus(GlobalState.Status.CONNECTED);
+                    currentState.setSpreadsheet(spreadsheet);
+                    currentState.setStatus(GlobalState.Status.CONNECTED);
 
-                        String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
-                        logger.debug("Connected to sheet: " + spreadsheetTitle);
+                    String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
+                    logger.debug("Connected to sheet: " + spreadsheetTitle);
 
-                    } catch (Exception ex) {
-                        currentState.setStatus(GlobalState.Status.SIGNED_IN);
-                        lblSpreadsheetMessage.setBackground(Color.RED);
-                        lblSpreadsheetMessage.setForeground(Color.WHITE);
-                        lblSpreadsheetMessage.setText("Cannot connect to the spreadsheet");
-                        logger.error("Error while loading spreadsheet", ex);
-                    }
+                } catch (Exception ex) {
+                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
+                    lblSpreadsheetMessage.setBackground(Color.RED);
+                    lblSpreadsheetMessage.setForeground(Color.WHITE);
+                    lblSpreadsheetMessage.setText("Cannot connect to the spreadsheet");
+                    logger.error("Error while loading spreadsheet", ex);
                 }
             }
         });
