@@ -33,6 +33,33 @@ pan: JPanel
  */
 class MainView extends JFrame implements Observer {
 
+    private static class TitledPanel extends JPanel {
+        private TitledPanel(String title) {
+            this.setLayout(new GridBagLayout());
+            this.setBorder(new CompoundBorder(
+                    new TitledBorder(title),
+                    new EmptyBorder(8, 8, 8, 8))    // Inner padding of each panel
+            );
+        }
+    }
+
+    private static class MessageLabel extends JLabel {
+        private final int CUT_OFF = 60;
+        MessageLabel(String text) {
+            super(text);
+        }
+
+        @Override
+        public void setText(String text) {
+            String cutOff = text;
+            if (cutOff.length() > CUT_OFF) {
+                cutOff = cutOff.substring(0, CUT_OFF) + "...";
+            }
+            super.setText(cutOff);
+            setToolTipText(text);
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
 
     private final String BUTTON_TEXT_SIGN_IN = "Sign In";
@@ -47,8 +74,8 @@ class MainView extends JFrame implements Observer {
     private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
     private final JButton btnConnect = new JButton(BUTTON_TEXT_CONNECT);
     private final JTextField txtSpreadsheetID = new JTextField(15);
-    private final JLabel lblSpreadsheetMessage = new JLabel(" ");
-    private final JLabel lblSheetMessage = new JLabel(" ");
+    private final MessageLabel lblSpreadsheetMessage = new MessageLabel(" ");
+    private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
 
     MainView() {
@@ -109,16 +136,6 @@ class MainView extends JFrame implements Observer {
         this.setResizable(false);
         this.pack();
         this.setLocationRelativeTo(null);
-    }
-
-    private class TitledPanel extends JPanel {
-        private TitledPanel(String title) {
-            this.setLayout(new GridBagLayout());
-            this.setBorder(new CompoundBorder(
-                    new TitledBorder(title),
-                    new EmptyBorder(8, 8, 8, 8))    // Inner padding of each panel
-            );
-        }
     }
 
     private JPanel createSignInPanel() {

@@ -49,7 +49,7 @@ public class SpreadsheetConnectController implements Controller {
                     lblSpreadsheetMessage.setText("Please enter a spreadsheet Id.");
                     return;
                 }
-                boolean hasError = false;
+                String errorMessage = "";
                 try {
                     VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
                     spreadsheet.connect();
@@ -62,17 +62,16 @@ public class SpreadsheetConnectController implements Controller {
                 }
                 catch (GoogleJsonResponseException ex) {
                     currentState.setStatus(GlobalState.Status.SIGNED_IN);
-                    hasError = true;
-                    lblSpreadsheetMessage.setText(ex.getDetails().getMessage());
+                    errorMessage = ex.getDetails().getMessage();
                     logger.error("Error while loading spreadsheet", ex);
                 }
                 catch (Exception ex) {
                     currentState.setStatus(GlobalState.Status.SIGNED_IN);
-                    hasError = true;
-                    lblSpreadsheetMessage.setText("Cannot connect to the spreadsheet.");
+                    errorMessage = "Cannot connect to the spreadsheet.";
                     logger.error("Error while loading spreadsheet", ex);
                 }
-                if (hasError) {
+                if (!errorMessage.isEmpty()) {
+                    lblSpreadsheetMessage.setText(errorMessage);
                     lblSpreadsheetMessage.setBackground(Color.RED);
                     lblSpreadsheetMessage.setForeground(Color.WHITE);
                 }
