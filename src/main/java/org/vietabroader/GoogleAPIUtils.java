@@ -112,6 +112,8 @@ public class GoogleAPIUtils {
      */
     public static void signOut() {
         cachedCredential = null;
+        cachedSheetsService = null;
+        cachedDriveService = null;
         try {
             FileUtils.deleteDirectory(DATA_STORE_DIR);
         } catch (IOException e) {

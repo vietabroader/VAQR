@@ -64,14 +64,14 @@ class MainView extends JFrame implements Observer {
 
     private final String BUTTON_TEXT_SIGN_IN = "Sign In";
     private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
-    private final String LABEL_TEXT_EMAIL = "Please sign in with your Google account";
+    private final String LABEL_TEXT_SIGN_IN = "Please sign in with your Google account";
     private final String BUTTON_TEXT_CONNECT = "Connect";
 
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
 
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
-    private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
+    private final JLabel lblAuthMessage = new JLabel(LABEL_TEXT_SIGN_IN);
     private final JButton btnConnect = new JButton(BUTTON_TEXT_CONNECT);
     private final JTextField txtSpreadsheetID = new JTextField(15);
     private final MessageLabel lblSpreadsheetMessage = new MessageLabel(" ");
@@ -150,10 +150,10 @@ class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(btnAuthenticate, c);
 
-        lblEmail.setPreferredSize(LABEL_DIM_EMAIL);
+        lblAuthMessage.setPreferredSize(LABEL_DIM_EMAIL);
         c.gridx = 1;
         c.gridy = 0;
-        panel.add(lblEmail, c);
+        panel.add(lblAuthMessage, c);
 
         return panel;
     }
@@ -361,6 +361,9 @@ class MainView extends JFrame implements Observer {
         lblSheetMessage.setForeground(Color.BLACK);
         lblSheetMessage.setText(" ");
 
+        btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
+        lblAuthMessage.setText(LABEL_TEXT_SIGN_IN);
+
         cbbSheet.removeAllItems();
     }
 
@@ -375,13 +378,11 @@ class MainView extends JFrame implements Observer {
         GlobalState.Status currentStatus = currentState.getStatus();
         switch (currentStatus) {
             case SIGNED_OUT:
-                btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
-                lblEmail.setText(LABEL_TEXT_EMAIL);
                 resetOnSignedOut();
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
-                lblEmail.setText(currentState.getUserEmail());
+                lblAuthMessage.setText(currentState.getUserEmail());
                 break;
             case CONNECTED:
                 VASpreadsheet currentSpreadsheet = currentState.getSpreadsheet();

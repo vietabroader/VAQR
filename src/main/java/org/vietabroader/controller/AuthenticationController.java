@@ -6,8 +6,6 @@ import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.model.GlobalState;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AuthenticationController implements Controller {
 
@@ -25,16 +23,7 @@ public class AuthenticationController implements Controller {
         btnAuthenticate.addActionListener(e -> {
             GlobalState currentState = GlobalState.getInstance();
             if (currentState.getStatus() == GlobalState.Status.SIGNED_OUT) {
-                try {
-                    String email = GoogleAPIUtils.signInAndGetEmail();
-                    currentState.setUserEmail(email);
-                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
-                } catch (Exception ex) {
-                    // Ensure that we are signed out when there is error
-                    GoogleAPIUtils.signOut();
-                    currentState.setStatus(GlobalState.Status.SIGNED_OUT);
-                    logger.error("Cannot sign in", ex);
-                }
+                (new SignInWorker()).execute();
             }
             else if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
                     || currentState.getStatus() == GlobalState.Status.CONNECTED) {
@@ -43,5 +32,27 @@ public class AuthenticationController implements Controller {
                 currentState.setUserEmail("");
             }
         });
+    }
+
+    private static class SignInWorker extends SwingWorker<String, Object> {
+        @Override
+        protected String doInBackground() throws Exception {
+            return GoogleAPIUtils.signInAndGetEmail();
+        }
+
+        @Override
+        protected void done() {
+            GlobalState currentState = GlobalState.getInstance();
+            try {
+                String email = get();
+                currentState.setUserEmail(email);
+                currentState.setStatus(GlobalState.Status.SIGNED_IN);
+            }
+            catch (Exception ex) {
+                GoogleAPIUtils.signOut();
+                currentState.setStatus(GlobalState.Status.SIGNED_OUT);
+                logger.error("Cannot sign in", ex);
+            }
+        }
     }
 }
