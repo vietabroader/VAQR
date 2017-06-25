@@ -21,6 +21,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 /*
+Main view of the app. This view observes the changes in GlobalState singleton.
+
 Prefix rules:
 btn: JButton
 lbl: JLabel
@@ -29,7 +31,6 @@ spn: JSpinner
 cbb: JComboBox
 pan: JPanel
  */
-
 class MainView extends JFrame implements Observer {
 
     private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
@@ -46,11 +47,12 @@ class MainView extends JFrame implements Observer {
     private final JLabel lblEmail = new JLabel(LABEL_TEXT_EMAIL);
     private final JButton btnConnect = new JButton(BUTTON_TEXT_CONNECT);
     private final JTextField txtSpreadsheetID = new JTextField(15);
-    private final JLabel lblSpreadsheetMessage = new JLabel("Spreadsheet message");
-    private final JLabel lblSheetMessage = new JLabel("Sheet message");
+    private final JLabel lblSpreadsheetMessage = new JLabel(" ");
+    private final JLabel lblSheetMessage = new JLabel(" ");
 
     MainView() {
         initUI();
+        resetMessages();
         initControllers();
     }
 
@@ -73,6 +75,7 @@ class MainView extends JFrame implements Observer {
         c.gridy = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         lblSpreadsheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        lblSpreadsheetMessage.setOpaque(true);
         panelMain.add(lblSpreadsheetMessage, c);
 
         // Sheet workspace panel
@@ -87,6 +90,7 @@ class MainView extends JFrame implements Observer {
         c.gridy = 6;
         c.fill = GridBagConstraints.HORIZONTAL;
         lblSheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        lblSheetMessage.setOpaque(true);
         panelMain.add(lblSheetMessage, c);
 
         // QR generating and reading panel
@@ -149,8 +153,6 @@ class MainView extends JFrame implements Observer {
 
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 2;
-        final JButton btnConnect = new JButton("Connect");
-
         panel.add(btnConnect);
 
         return panel;
@@ -330,6 +332,16 @@ class MainView extends JFrame implements Observer {
         return panel;
     }
 
+    private void resetMessages() {
+        lblSpreadsheetMessage.setBackground(Color.LIGHT_GRAY);
+        lblSpreadsheetMessage.setForeground(Color.BLACK);
+        lblSpreadsheetMessage.setText(" ");
+
+        lblSheetMessage.setBackground(Color.LIGHT_GRAY);
+        lblSheetMessage.setForeground(Color.BLACK);
+        lblSheetMessage.setText(" ");
+    }
+
     /**
      * Handle app state change
      */
@@ -343,12 +355,17 @@ class MainView extends JFrame implements Observer {
             case SIGNED_OUT:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
                 lblEmail.setText(LABEL_TEXT_EMAIL);
+                resetMessages();
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
                 lblEmail.setText(currentState.getUserEmail());
                 break;
             case CONNECTED:
+                String spreadsheetTitle = currentState.getSpreadsheet().getSpreadsheetTitle();
+                lblSpreadsheetMessage.setBackground(Color.GREEN);
+                lblSpreadsheetMessage.setForeground(Color.BLACK);
+                lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
                 break;
             case QR_READING:
                 break;
@@ -360,8 +377,9 @@ class MainView extends JFrame implements Observer {
         authController.setButtonAuthenticate(btnAuthenticate).control();
 
         SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
-        spreadSheetConnectController.setConnectButton(btnConnect)
+        spreadSheetConnectController.setButtonConnect(btnConnect)
                 .setTextSpreadsheetID(txtSpreadsheetID)
+                .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
                 .control();
     }
 }
