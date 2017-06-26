@@ -61,16 +61,15 @@ public class SpreadsheetConnectController implements Controller {
                     logger.debug("Connected to sheet: " + spreadsheetTitle);
                 }
                 catch (GoogleJsonResponseException ex) {
-                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
                     errorMessage = ex.getDetails().getMessage();
                     logger.error("Error while loading spreadsheet", ex);
                 }
                 catch (Exception ex) {
-                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
                     errorMessage = "Cannot connect to the spreadsheet.";
                     logger.error("Error while loading spreadsheet", ex);
                 }
                 if (!errorMessage.isEmpty()) {
+                    currentState.setStatus(GlobalState.Status.SIGNED_IN);
                     lblSpreadsheetMessage.setText(errorMessage);
                     lblSpreadsheetMessage.setBackground(Color.RED);
                     lblSpreadsheetMessage.setForeground(Color.WHITE);

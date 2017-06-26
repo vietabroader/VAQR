@@ -34,6 +34,9 @@ pan: JPanel
  */
 public class MainView extends JFrame implements Observer {
 
+    /**
+     * Panel with title
+     */
     private static class TitledPanel extends JPanel {
         private TitledPanel(String title) {
             this.setLayout(new GridBagLayout());
@@ -44,6 +47,9 @@ public class MainView extends JFrame implements Observer {
         }
     }
 
+    /**
+     * This label cuts off text that is too long. Full text can be seen in tooltip.
+     */
     private static class MessageLabel extends JLabel {
         private final int CUT_OFF = 60;
         MessageLabel(String text) {
@@ -85,6 +91,21 @@ public class MainView extends JFrame implements Observer {
         initUI();
         resetOnSignedOut();
         initControllers();
+    }
+
+    private void resetOnSignedOut() {
+        lblSpreadsheetMessage.setBackground(Color.LIGHT_GRAY);
+        lblSpreadsheetMessage.setForeground(Color.BLACK);
+        lblSpreadsheetMessage.setText(" ");
+
+        lblSheetMessage.setBackground(Color.LIGHT_GRAY);
+        lblSheetMessage.setForeground(Color.BLACK);
+        lblSheetMessage.setText(" ");
+
+        btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
+        lblAuthMessage.setText(LABEL_TEXT_SIGN_IN);
+
+        cbbSheet.removeAllItems();
     }
 
     private void initUI() {
@@ -179,6 +200,7 @@ public class MainView extends JFrame implements Observer {
     private JPanel createWorkspacePanel() {
         TitledPanel panel = new TitledPanel("Workspace");
 
+        // Sheet selection
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -190,7 +212,7 @@ public class MainView extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(cbbSheet, c);
 
-
+        // Row range specification
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
@@ -217,6 +239,7 @@ public class MainView extends JFrame implements Observer {
         txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
 
+        // Key columns and refresh button
         c = new GridBagConstraints();
         c.gridy = 2;
         c.gridwidth = 4;
@@ -257,7 +280,7 @@ public class MainView extends JFrame implements Observer {
 
         c.gridx = 1;
         JButton btnRefresh = new JButton("Refresh");
-        c.anchor = GridBagConstraints.LINE_END;
+        c.anchor = GridBagConstraints.CENTER;
         btnRefresh.setPreferredSize(new Dimension(100, 50));
         panelMain.add(btnRefresh, c);
 
@@ -326,23 +349,22 @@ public class MainView extends JFrame implements Observer {
         return panel;
     }
 
-    private void resetOnSignedOut() {
-        lblSpreadsheetMessage.setBackground(Color.LIGHT_GRAY);
-        lblSpreadsheetMessage.setForeground(Color.BLACK);
-        lblSpreadsheetMessage.setText(" ");
+    /**
+     * Initialize controllers
+     */
+    private void initControllers() {
+        AuthenticationController authController = new AuthenticationController();
+        authController.setButtonAuthenticate(btnAuthenticate).control();
 
-        lblSheetMessage.setBackground(Color.LIGHT_GRAY);
-        lblSheetMessage.setForeground(Color.BLACK);
-        lblSheetMessage.setText(" ");
-
-        btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
-        lblAuthMessage.setText(LABEL_TEXT_SIGN_IN);
-
-        cbbSheet.removeAllItems();
+        SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
+        spreadSheetConnectController.setButtonConnect(btnConnect)
+                .setTextSpreadsheetID(txtSpreadsheetID)
+                .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
+                .control();
     }
 
     /**
-     * Handle app state change
+     * Handle global state change
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -372,17 +394,6 @@ public class MainView extends JFrame implements Observer {
             case QR_READING:
                 break;
         }
-    }
-
-    private void initControllers() {
-        AuthenticationController authController = new AuthenticationController();
-        authController.setButtonAuthenticate(btnAuthenticate).control();
-
-        SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
-        spreadSheetConnectController.setButtonConnect(btnConnect)
-                .setTextSpreadsheetID(txtSpreadsheetID)
-                .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
-                .control();
     }
 }
 
