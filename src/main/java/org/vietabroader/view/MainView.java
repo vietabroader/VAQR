@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
+import org.vietabroader.controller.SheetFreshController;
 import org.vietabroader.controller.SpreadsheetConnectController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
@@ -20,6 +21,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
@@ -91,6 +93,8 @@ public class MainView extends JFrame implements Observer {
     private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
     private final JProgressBar prgIndicator = new JProgressBar();
+    private final HashMap<String, String> columnArray = new HashMap<>();
+    private final SheetFreshController sheetFreshController = new SheetFreshController();
 
 
     public MainView() {
@@ -135,6 +139,7 @@ public class MainView extends JFrame implements Observer {
         lblSpreadsheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         lblSpreadsheetMessage.setOpaque(true);
         panelMain.add(lblSpreadsheetMessage, c);
+        sheetFreshController.setSheetMessage(lblSheetMessage);
 
         // Sheet workspace panel
         c.gridy = 4;
@@ -230,6 +235,7 @@ public class MainView extends JFrame implements Observer {
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(cbbSheet, c);
+        sheetFreshController.setComSheets(cbbSheet);
 
         // Row range specification
         c = new GridBagConstraints();
@@ -257,6 +263,7 @@ public class MainView extends JFrame implements Observer {
         txtRowTo.setInputVerifier(new RowVerifier());
         txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
+        sheetFreshController.setRowFields(txtRowFrom, txtRowTo);
 
         // Key columns and refresh button
         c = new GridBagConstraints();
@@ -278,21 +285,28 @@ public class MainView extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
-        final JPanel panKey = createOneColumn("Key");
-        panel.add(panKey, c);
+        oneColumn colKey = new oneColumn("Key");
+        panel.add(colKey.panel, c);
+        sheetFreshController.setColumnArray("Key", colKey.textField);
 
         c.gridx = 1;
-        final JPanel panSecret = createOneColumn("Secret");
+        oneColumn colSecret = new oneColumn("Secret");
+        final JPanel panSecret = colSecret.panel;
         panSecret.setEnabled(false);
         panel.add(panSecret, c);
+        sheetFreshController.setColumnArray("Secret", colSecret.textField);
 
         c.gridx = 2;
-        final JPanel panQR = createOneColumn("QR");
+        oneColumn colQR = new oneColumn("QR");
+        final JPanel panQR = colQR.panel;
         panel.add(panQR, c);
+        sheetFreshController.setColumnArray("QR", colQR.textField);
 
         c.gridx = 3;
-        final JPanel panOutput = createOneColumn("Output");
+        oneColumn colOutput = new oneColumn("Output");
+        final JPanel panOutput = colOutput.panel;
         panel.add(panOutput, c);
+        sheetFreshController.setColumnArray("Output", colOutput.textField);
 
         c = new GridBagConstraints();
         panelMain.add(panel, c);
@@ -302,35 +316,41 @@ public class MainView extends JFrame implements Observer {
         c.anchor = GridBagConstraints.CENTER;
         btnRefresh.setPreferredSize(new Dimension(100, 50));
         panelMain.add(btnRefresh, c);
+        sheetFreshController.setButtonRefresh(btnRefresh);
 
         return panelMain;
     }
 
-    private JPanel createOneColumn(String label) {
-        final JTextField txtCol = new JTextField("A",5);
-        JPanel panel = new JPanel() {
-            @Override
-            public void setEnabled(boolean enabled) {
-                super.setEnabled(enabled);
-                txtCol.setEnabled(enabled);
-            }
-        };
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+    private class oneColumn {
+        private JPanel panel;
+        private JTextField textField;
 
-        c.weightx = 1;
+        private oneColumn (String label) {
+            final JTextField txtCol = new JTextField("A",5);
+            this.panel = new JPanel() {
+                @Override
+                public void setEnabled(boolean enabled) {
+                    super.setEnabled(enabled);
+                    txtCol.setEnabled(enabled);
+                }
+            };
+            this.textField = txtCol;
+            panel.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
 
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.CENTER;
-        panel.add(new JLabel(label), c);
+            c.weightx = 1;
 
-        c.gridy = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        txtCol.setInputVerifier(new ColumnVerifier());
-        txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
-        panel.add(txtCol, c);
+            c.gridy = 0;
+            c.anchor = GridBagConstraints.CENTER;
+            panel.add(new JLabel(label), c);
 
-        return panel;
+            c.gridy = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            txtCol.setInputVerifier(new ColumnVerifier());
+            txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
+            panel.add(txtCol, c);
+        }
+
     }
 
     private JPanel createGeneratePanel() {
@@ -403,6 +423,8 @@ public class MainView extends JFrame implements Observer {
                 .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
                 .setProgressIndicator(prgIndicator)
                 .control();
+
+        sheetFreshController.control();
     }
 
     /**
