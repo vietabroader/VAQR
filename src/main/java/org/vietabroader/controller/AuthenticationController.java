@@ -34,7 +34,7 @@ public class AuthenticationController implements Controller {
         });
     }
 
-    private static class SignInWorker extends SwingWorker<String, Object> {
+    private class SignInWorker extends SwingWorker<String, Object> {
         @Override
         protected String doInBackground() throws Exception {
             return GoogleAPIUtils.signInAndGetEmail();

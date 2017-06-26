@@ -13,6 +13,7 @@ import org.vietabroader.view.verifier.RowVerifier;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
@@ -31,6 +32,7 @@ txt: JTextField
 spn: JSpinner
 cbb: JComboBox
 pan: JPanel
+prg: JProgressBar
  */
 public class MainView extends JFrame implements Observer {
 
@@ -86,6 +88,8 @@ public class MainView extends JFrame implements Observer {
     private final MessageLabel lblSpreadsheetMessage = new MessageLabel(" ");
     private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
+    private final JProgressBar prgIndicator = new JProgressBar();
+
 
     public MainView() {
         initUI();
@@ -150,6 +154,12 @@ public class MainView extends JFrame implements Observer {
 
         c.gridx = 1;
         panelMain.add(createWebcamPanel(), c);
+
+        c.gridy = 7;
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.insets = new Insets(0, 0, 0, 0);
+        panelMain.add(createFooterPanel(), c);
 
         this.setTitle("VAQR");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -349,6 +359,13 @@ public class MainView extends JFrame implements Observer {
         return panel;
     }
 
+    private JPanel createFooterPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        prgIndicator.setIndeterminate(false);
+        panel.add(prgIndicator);
+        return panel;
+    }
+
     /**
      * Initialize controllers
      */
@@ -360,6 +377,7 @@ public class MainView extends JFrame implements Observer {
         spreadSheetConnectController.setButtonConnect(btnConnect)
                 .setTextSpreadsheetID(txtSpreadsheetID)
                 .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
+                .setProgressIndicator(prgIndicator)
                 .control();
     }
 
