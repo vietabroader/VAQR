@@ -1,6 +1,7 @@
-package org.vietabroader.view;
+package org.vietabroader;
 
 import org.vietabroader.model.GlobalState;
+import org.vietabroader.view.MainView;
 
 import javax.swing.*;
 

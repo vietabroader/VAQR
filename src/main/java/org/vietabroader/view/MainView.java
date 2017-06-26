@@ -32,7 +32,7 @@ spn: JSpinner
 cbb: JComboBox
 pan: JPanel
  */
-class MainView extends JFrame implements Observer {
+public class MainView extends JFrame implements Observer {
 
     private static class TitledPanel extends JPanel {
         private TitledPanel(String title) {
@@ -81,7 +81,7 @@ class MainView extends JFrame implements Observer {
     private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
 
-    MainView() {
+    public MainView() {
         initUI();
         resetOnSignedOut();
         initControllers();
