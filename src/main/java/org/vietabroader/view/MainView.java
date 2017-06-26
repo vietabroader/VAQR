@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
+import java.net.URI;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
@@ -61,6 +62,8 @@ class MainView extends JFrame implements Observer {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(GoogleAPIUtils.class);
+
+    private final String QR_GENERATOR_URL = "https://vietabroader-qr.appspot.com/";
 
     private final String BUTTON_TEXT_SIGN_IN = "Sign In";
     private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
@@ -124,6 +127,7 @@ class MainView extends JFrame implements Observer {
         // QR generating and reading panel
         c.gridy = 7;
         c.gridwidth = 1;
+        c.weightx = 1 / 2.0;
         c.gridx = 0;
         c.fill = GridBagConstraints.BOTH;
         panelMain.add(createGeneratePanel(), c);
@@ -317,21 +321,18 @@ class MainView extends JFrame implements Observer {
     private JPanel createGeneratePanel() {
         TitledPanel panel = new TitledPanel("Generate QR Code");
         GridBagConstraints c = new GridBagConstraints();
-
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(new JLabel("Drive folder ID"), c);
-
-        c.gridy = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        final JTextField txtDriveID = new JTextField(15);
-        panel.add(txtDriveID, c);
-
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 2;
         c.anchor = GridBagConstraints.CENTER;
-        final JButton btnQR = new JButton("Generate QR Code");
-        panel.add(btnQR, c);
+        JButton btnGenerator = new JButton("Go to QR Generator");
+        btnGenerator.setPreferredSize(new Dimension(160, 60));
+        panel.add(btnGenerator, c);
+
+        btnGenerator.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(new URI(QR_GENERATOR_URL));
+            } catch (Exception ex) {
+                logger.error("Cannot open QR Generator", ex);
+            }
+        });
 
         return panel;
     }
