@@ -138,6 +138,15 @@ public class VASpreadsheet {
     }
 
     /**
+     * Remove all column names in columnNameToChar
+     *
+     */
+    public VASpreadsheet removeAllColumn() {
+        this.columnNameToChar = new HashMap<String, String>();
+        return this;
+    }
+
+    /**
      * Read a named column in this cache
      *
      * @param colName name of the column
@@ -170,6 +179,8 @@ public class VASpreadsheet {
         }
         return col.get(row);
     }
+
+
 
     public static class VASpreadsheetException extends Exception {
         public VASpreadsheetException(String msg) {
