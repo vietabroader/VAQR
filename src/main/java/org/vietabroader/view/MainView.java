@@ -39,7 +39,7 @@ class MainView extends JFrame implements Observer {
             this.setLayout(new GridBagLayout());
             this.setBorder(new CompoundBorder(
                     new TitledBorder(title),
-                    new EmptyBorder(8, 8, 8, 8))    // Inner padding of each panel
+                    new EmptyBorder(8, 2, 8, 2))    // Inner padding of each panel
             );
         }
     }
@@ -258,7 +258,7 @@ class MainView extends JFrame implements Observer {
         c.gridx = 1;
         JButton btnRefresh = new JButton("Refresh");
         c.anchor = GridBagConstraints.LINE_END;
-        btnRefresh.setPreferredSize(new Dimension(120, 50));
+        btnRefresh.setPreferredSize(new Dimension(100, 50));
         panelMain.add(btnRefresh, c);
 
         return panelMain;
