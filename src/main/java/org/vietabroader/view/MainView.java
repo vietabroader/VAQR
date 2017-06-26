@@ -361,8 +361,23 @@ public class MainView extends JFrame implements Observer {
 
     private JPanel createFooterPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1/2.0;
+        c.insets = new Insets(5, 10, 5, 10);
+
+        c.gridx = 0;
+        c.anchor = GridBagConstraints.LINE_START;
+        JLabel lblCopyright = new JLabel("\u00a9 VietAbroader 2017");
+        lblCopyright.setForeground(Color.GRAY);
+        panel.add(lblCopyright, c);
+
+        c.gridx = 1;
+        c.anchor = GridBagConstraints.LINE_END;
         prgIndicator.setIndeterminate(false);
-        panel.add(prgIndicator);
+        panel.add(prgIndicator, c);
+
         return panel;
     }
 
