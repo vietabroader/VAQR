@@ -114,18 +114,13 @@ class MainView extends JFrame implements Observer {
         panelMain.add(createWorkspacePanel(), c);
 
         c.gridy = 5;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LINE_START;
-        panelMain.add(createColumnPanel(), c);
-
-        c.gridy = 6;
         c.fill = GridBagConstraints.HORIZONTAL;
         lblSheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         lblSheetMessage.setOpaque(true);
         panelMain.add(lblSheetMessage, c);
 
         // QR generating and reading panel
-        c.gridy = 7;
+        c.gridy = 6;
         c.gridwidth = 1;
         c.weightx = 1 / 2.0;
         c.gridx = 0;
@@ -187,13 +182,11 @@ class MainView extends JFrame implements Observer {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1 / 6.0;
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(new JLabel("Sheet: "), c);
 
         c.gridx = 1;
         c.gridwidth = 3;
-        c.weightx = 5 / 6.0;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(cbbSheet, c);
 
@@ -201,55 +194,35 @@ class MainView extends JFrame implements Observer {
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
-        c.weightx = 1 / 6.0;
-        c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_END;
-        panel.add(new JLabel("Column: "), c);
-
-        c.gridx = 1;
-        c.weightx = 2 / 6.0;
-        c.anchor = GridBagConstraints.CENTER;
-        final JTextField txtColFrom = new JTextField("A",5);
-        txtColFrom.setInputVerifier(new ColumnVerifier());
-        txtColFrom.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
-        panel.add(txtColFrom, c);
-
-        c.gridx = 2;
-        c.weightx = 1 / 6.0;
-        panel.add(new JLabel("to"), c);
-
-        c.gridx = 3;
-        c.weightx = 2 / 6.0;
-        final JTextField txtColTo = new JTextField("A",5);
-        txtColTo.setInputVerifier(new ColumnVerifier());
-        txtColTo.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
-        panel.add(txtColTo, c);
-
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 2;
-        c.weightx = 1 / 6.0;
-        c.anchor = GridBagConstraints.LINE_END;
+        c.weightx = 1/6.0;
         panel.add(new JLabel("Row: "), c);
 
         c.gridx = 1;
-        c.weightx = 2 / 6.0;
         c.anchor = GridBagConstraints.CENTER;
+        c.weightx = 2/6.0;
         final JTextField txtRowFrom = new JTextField("1",5);
         txtRowFrom.setInputVerifier(new RowVerifier());
         txtRowFrom.setToolTipText("Enter a positive integer");
         panel.add(txtRowFrom, c);
 
         c.gridx = 2;
-        c.weightx = 1 / 6.0;
+        c.weightx = 1/6.0;
         panel.add(new JLabel("to"), c);
 
         c.gridx = 3;
-        c.weightx = 2 / 6.0;
+        c.weightx = 2/6.0;
         final JTextField txtRowTo = new JTextField("1",5);
         txtRowTo.setInputVerifier(new RowVerifier());
         txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
+
+        c = new GridBagConstraints();
+        c.gridy = 2;
+        c.gridwidth = 4;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        JPanel panCol = createColumnPanel();
+        panel.add(panCol, c);
 
         return panel;
     }
