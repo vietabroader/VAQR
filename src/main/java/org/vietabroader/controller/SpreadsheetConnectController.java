@@ -46,7 +46,7 @@ public class SpreadsheetConnectController implements Controller {
                 if (spreadsheetId.isEmpty()) {
                     lblSpreadsheetMessage.setBackground(Color.YELLOW);
                     lblSpreadsheetMessage.setForeground(Color.BLACK);
-                    lblSpreadsheetMessage.setText("Please enter a spreadsheet Id.");
+                    lblSpreadsheetMessage.setText("Please enter a spreadsheet ID.");
                     return;
                 }
                 String errorMessage = "";
