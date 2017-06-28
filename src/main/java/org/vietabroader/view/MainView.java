@@ -17,6 +17,8 @@ import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.List;
 import java.util.Observer;
@@ -110,6 +112,9 @@ public class MainView extends JFrame implements Observer {
         lblAuthMessage.setText(LABEL_TEXT_SIGN_IN);
 
         cbbSheet.removeAllItems();
+
+        GlobalState currentState = GlobalState.getInstance();
+        currentState.setStatus(GlobalState.Status.SIGNED_OUT);
     }
 
     private void initUI() {
@@ -160,6 +165,16 @@ public class MainView extends JFrame implements Observer {
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 0);
         panelMain.add(createFooterPanel(), c);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                GoogleAPIUtils.signOut();
+                GlobalState currentState = GlobalState.getInstance();
+                currentState.setStatus(GlobalState.Status.SIGNED_OUT);
+                currentState.setUserEmail("");
+            }
+        });
 
         this.setTitle("VAQR");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
