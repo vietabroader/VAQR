@@ -48,6 +48,15 @@ public class MainView extends JFrame implements Observer {
                     new EmptyBorder(8, 2, 8, 2))    // Inner padding of each panel
             );
         }
+
+        @Override
+        public void setEnabled(boolean b) {
+            this.setEnabled(b);
+            Component[] children = this.getComponents();
+            for (Component child: children) {
+                child.setEnabled(b);
+            }
+        }
     }
 
     /**
@@ -97,6 +106,13 @@ public class MainView extends JFrame implements Observer {
     private final JTextField txtRowTo = new JTextField("1",5);
     private final OneColumn[] columnArray = new OneColumn[4];
 
+    private final JPanel panSignIn = createSignInPanel();
+    private final JPanel panSpreadsheet = createSpreadsheetPanel();
+    private final JPanel panWorkspace = createWorkspacePanel();
+    private final JPanel panGenerate = createGeneratePanel();
+    private final JPanel panWebcam = createWebcamPanel();
+    private final JPanel panFooter = createFooterPanel();
+
     public MainView() {
         initUI();
         resetOnSignedOut();
@@ -128,11 +144,12 @@ public class MainView extends JFrame implements Observer {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
-        panelMain.add(createSignInPanel(), c);
+
+        panelMain.add(panSignIn, c);
 
         // Spreadsheet connect panel
         c.gridy = 2;
-        panelMain.add(createSpreadsheetPanel(), c);
+        panelMain.add(panSpreadsheet, c);
 
         c.gridy = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -142,7 +159,7 @@ public class MainView extends JFrame implements Observer {
 
         // Sheet workspace panel
         c.gridy = 4;
-        panelMain.add(createWorkspacePanel(), c);
+        panelMain.add(panWorkspace, c);
 
         c.gridy = 5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -156,16 +173,16 @@ public class MainView extends JFrame implements Observer {
         c.weightx = 1 / 2.0;
         c.gridx = 0;
         c.fill = GridBagConstraints.BOTH;
-        panelMain.add(createGeneratePanel(), c);
+        panelMain.add(panGenerate, c);
 
         c.gridx = 1;
-        panelMain.add(createWebcamPanel(), c);
+        panelMain.add(panWebcam, c);
 
         c.gridy = 7;
         c.gridx = 0;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 0);
-        panelMain.add(createFooterPanel(), c);
+        panelMain.add(panFooter, c);
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -344,6 +361,9 @@ public class MainView extends JFrame implements Observer {
         btnWebcam.addActionListener(e -> {
             WebcamView camView = new WebcamView();
             camView.setVisible(true);
+
+            GlobalState currentState = GlobalState.getInstance();
+            currentState.setStatus(GlobalState.Status.QR_READING);
         });
 
         return panel;
@@ -410,10 +430,15 @@ public class MainView extends JFrame implements Observer {
         switch (currentStatus) {
             case SIGNED_OUT:
                 resetOnSignedOut();
+                setEnabledChildren(false);
+                panSignIn.setEnabled(true);
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
                 lblAuthMessage.setText(currentState.getUserEmail());
+                setEnabledChildren(false);
+                panSignIn.setEnabled(true);
+                panSpreadsheet.setEnabled(true);
                 break;
             case CONNECTED:
                 VASpreadsheet currentSpreadsheet = currentState.getSpreadsheet();
@@ -421,14 +446,27 @@ public class MainView extends JFrame implements Observer {
                 lblSpreadsheetMessage.setBackground(Color.GREEN);
                 lblSpreadsheetMessage.setForeground(Color.BLACK);
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
-
+                setEnabledChildren(true);
                 List<String> sheets = currentSpreadsheet.getSheetTitles();
                 cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
                 break;
             case QR_READING:
+                setEnabledChildren(false);
+                break;
+            case REFRESHED:
+                setEnabledChildren(true);
+                panWebcam.setEnabled(true);
                 break;
         }
     }
+
+    public void setEnabledChildren(boolean b) {
+        panSignIn.setEnabled(b);
+        panSpreadsheet.setEnabled(b);
+        panWorkspace.setEnabled(b);
+        panWebcam.setEnabled(b);
+    }
+
 }
 
