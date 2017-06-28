@@ -112,9 +112,6 @@ public class MainView extends JFrame implements Observer {
         lblAuthMessage.setText(LABEL_TEXT_SIGN_IN);
 
         cbbSheet.removeAllItems();
-
-        GlobalState currentState = GlobalState.getInstance();
-        currentState.setStatus(GlobalState.Status.SIGNED_OUT);
     }
 
     private void initUI() {
