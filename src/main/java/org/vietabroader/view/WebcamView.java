@@ -52,10 +52,6 @@ public class WebcamView extends JFrame {
             @Override
             public void windowClosing(WindowEvent e){
                 webcamPanel.stop();
-
-                //TODO: should be in WebcamController
-                GlobalState currentState = GlobalState.getInstance();
-                currentState.setStatus(GlobalState.Status.CONNECTED);
             }
         });
 
