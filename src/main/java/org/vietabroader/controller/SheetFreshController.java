@@ -6,6 +6,7 @@ import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
 
 import javax.swing.*;
+import java.awt.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class SheetFreshController implements Controller {
     private JTextField txtRowTo;
     private JLabel lblSheetMessage;
     private HashMap<String, JTextField> columnArray = new HashMap<>();
+    private JProgressBar prgIndicator;
 
     public SheetFreshController setButtonRefresh(JButton btn) {
         btnRefresh = btn;
@@ -46,56 +48,68 @@ public class SheetFreshController implements Controller {
         return this;
     }
 
+    public SheetFreshController setProgressIndicator(JProgressBar prg) {
+        prgIndicator = prg;
+        return this;
+    }
+
     @Override
     public void control() {
         btnRefresh.addActionListener(e -> {
+
             GlobalState currentState = GlobalState.getInstance();
-            VASpreadsheet spreadsheet = currentState.getSpreadsheet();
 
-            spreadsheet.removeAllColumn();
+            if (currentState.getStatus() == GlobalState.Status.CONNECTED) {
 
-            String selected = (String) comSheets.getSelectedItem();
-            spreadsheet.setSheetName(selected);
-            logger.info("Sheet " + selected + " is selected");
+                VASpreadsheet spreadsheet = currentState.getSpreadsheet();
 
-            int from = Integer.parseInt(txtRowFrom.getText());
-            int to = Integer.parseInt(txtRowTo.getText());
-            spreadsheet.setRow(from, to);
-            logger.info("Row " + from + " " + to);
+                spreadsheet.removeAllColumns();
 
-            for(String key: columnArray.keySet()) {
-                spreadsheet.setColumnChar(key, columnArray.get(key).getText());
-                logger.info(key + " " + columnArray.get(key).getText());
+                String selected = (String) comSheets.getSelectedItem();
+                spreadsheet.setSheetName(selected);
+                logger.info("Sheet " + selected + " is selected");
+
+                int from = Integer.parseInt(txtRowFrom.getText());
+                int to = Integer.parseInt(txtRowTo.getText());
+                spreadsheet.setRow(from, to);
+                logger.info("Row " + from + " " + to);
+
+                for(String key: columnArray.keySet()) {
+                    spreadsheet.setColumnChar(key, columnArray.get(key).getText());
+                    logger.info(key + " " + columnArray.get(key).getText());
+                }
+
+                (new RefreshWorker()).execute();
+                prgIndicator.setIndeterminate(true);
             }
-
-            (new RefreshWorker(lblSheetMessage)).execute();
         });
     }
 
-    private static class RefreshWorker extends SwingWorker<String, Object> {
-        private JLabel lbl;
+    private class RefreshWorker extends SwingWorker<VASpreadsheet, Object> {
 
-        RefreshWorker(JLabel lbl) {
-            this.lbl = lbl;
+        @Override
+        protected VASpreadsheet doInBackground() throws Exception {
+            VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
+            spreadsheet.refreshAllColumns();
+            return spreadsheet;
         }
 
         @Override
-        protected String doInBackground() throws Exception {
-            GlobalState currentState = GlobalState.getInstance();
-            VASpreadsheet spreadsheet = currentState.getSpreadsheet();
-            logger.info("Start to refresh the sheet" + spreadsheet.getSpreadsheetTitle());
+        protected void done() {
             try {
+                VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
                 spreadsheet.refreshAllColumns();
+
+                long now = Calendar.getInstance().getTimeInMillis();
+                lblSheetMessage.setText("The sheet has been refreshed at " + new Timestamp(now));
+                logger.info("The sheet has been refreshed");
             } catch (Exception e) {
+                lblSheetMessage.setBackground(Color.RED);
+                lblSheetMessage.setForeground(Color.WHITE);
+                lblSheetMessage.setText("The sheet cannot be refreshed ");
                 logger.error("Cannot refresh the sheet" + e);
             }
-            return "";
-        }
-
-        protected void done() {
-            long now = Calendar.getInstance().getTimeInMillis();
-            lbl.setText("The sheet has been refreshed at " + new Timestamp(now));
-            logger.info("The sheet has been refreshed");
+            prgIndicator.setIndeterminate(true);
         }
     }
 }
