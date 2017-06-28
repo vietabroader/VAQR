@@ -167,9 +167,6 @@ public class MainView extends JFrame implements Observer {
             @Override
             public void windowClosing(WindowEvent e){
                 GoogleAPIUtils.signOut();
-                GlobalState currentState = GlobalState.getInstance();
-                currentState.setStatus(GlobalState.Status.SIGNED_OUT);
-                currentState.setUserEmail("");
             }
         });
 
