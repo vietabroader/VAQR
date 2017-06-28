@@ -4,6 +4,7 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import org.vietabroader.controller.WebcamController;
+import org.vietabroader.model.GlobalState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,6 +52,10 @@ public class WebcamView extends JFrame {
             @Override
             public void windowClosing(WindowEvent e){
                 webcamPanel.stop();
+
+                //TODO: should be in WebcamController
+                GlobalState currentState = GlobalState.getInstance();
+                currentState.setStatus(GlobalState.Status.CONNECTED);
             }
         });
 
