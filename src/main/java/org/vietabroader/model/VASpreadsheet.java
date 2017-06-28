@@ -141,9 +141,8 @@ public class VASpreadsheet {
      * Remove all column names in columnNameToChar
      *
      */
-    public VASpreadsheet removeAllColumn() {
-        this.columnNameToChar = new HashMap<String, String>();
-        return this;
+    public void removeAllColumns() {
+        this.columnNameToChar.clear();
     }
 
     /**

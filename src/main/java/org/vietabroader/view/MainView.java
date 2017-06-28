@@ -8,20 +8,17 @@ import org.vietabroader.controller.SheetFreshController;
 import org.vietabroader.controller.SpreadsheetConnectController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
-import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
@@ -81,9 +78,11 @@ public class MainView extends JFrame implements Observer {
     private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
     private final String LABEL_TEXT_SIGN_IN = "Please sign in with your Google account";
     private final String BUTTON_TEXT_CONNECT = "Connect";
+    private final String BUTTON_TEXT_REFRESH = "Refresh";
 
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
+    private final Dimension BUTTON_DIM_REFRESH = new Dimension(100, 50);
 
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
     private final JLabel lblAuthMessage = new JLabel(LABEL_TEXT_SIGN_IN);
@@ -93,9 +92,10 @@ public class MainView extends JFrame implements Observer {
     private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
     private final JProgressBar prgIndicator = new JProgressBar();
-    private final HashMap<String, String> columnArray = new HashMap<>();
-    private final SheetFreshController sheetFreshController = new SheetFreshController();
-
+    private final JButton btnRefresh = new JButton(BUTTON_TEXT_REFRESH);
+    private final JTextField txtRowFrom = new JTextField("1",5);
+    private final JTextField txtRowTo = new JTextField("1",5);
+    private final OneColumn[] columnArray = new OneColumn[4];
 
     public MainView() {
         initUI();
@@ -139,7 +139,6 @@ public class MainView extends JFrame implements Observer {
         lblSpreadsheetMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         lblSpreadsheetMessage.setOpaque(true);
         panelMain.add(lblSpreadsheetMessage, c);
-        sheetFreshController.setSheetMessage(lblSheetMessage);
 
         // Sheet workspace panel
         c.gridy = 4;
@@ -235,7 +234,6 @@ public class MainView extends JFrame implements Observer {
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(cbbSheet, c);
-        sheetFreshController.setComSheets(cbbSheet);
 
         // Row range specification
         c = new GridBagConstraints();
@@ -248,7 +246,7 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 1;
         c.anchor = GridBagConstraints.CENTER;
         c.weightx = 2/6.0;
-        final JTextField txtRowFrom = new JTextField("1",5);
+
         txtRowFrom.setInputVerifier(new RowVerifier());
         txtRowFrom.setToolTipText("Enter a positive integer");
         panel.add(txtRowFrom, c);
@@ -259,11 +257,9 @@ public class MainView extends JFrame implements Observer {
 
         c.gridx = 3;
         c.weightx = 2/6.0;
-        final JTextField txtRowTo = new JTextField("1",5);
         txtRowTo.setInputVerifier(new RowVerifier());
         txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
-        sheetFreshController.setRowFields(txtRowFrom, txtRowTo);
 
         // Key columns and refresh button
         c = new GridBagConstraints();
@@ -285,73 +281,38 @@ public class MainView extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
-        oneColumn colKey = new oneColumn("Key");
-        panel.add(colKey.panel, c);
-        sheetFreshController.setColumnArray("Key", colKey.textField);
+        OneColumn colKey = new OneColumn("Key");
+        panel.add(colKey, c);
+        columnArray[0] = colKey;
 
         c.gridx = 1;
-        oneColumn colSecret = new oneColumn("Secret");
-        final JPanel panSecret = colSecret.panel;
-        panSecret.setEnabled(false);
-        panel.add(panSecret, c);
-        sheetFreshController.setColumnArray("Secret", colSecret.textField);
+        OneColumn colSecret = new OneColumn("Secret");
+        colSecret.setEnabled(false);
+        panel.add(colSecret, c);
+        columnArray[1] = colSecret;
 
         c.gridx = 2;
-        oneColumn colQR = new oneColumn("QR");
-        final JPanel panQR = colQR.panel;
-        panel.add(panQR, c);
-        sheetFreshController.setColumnArray("QR", colQR.textField);
+        OneColumn colQR = new OneColumn("QR");
+        panel.add(colQR, c);
+        columnArray[2] = colQR;
 
         c.gridx = 3;
-        oneColumn colOutput = new oneColumn("Output");
-        final JPanel panOutput = colOutput.panel;
-        panel.add(panOutput, c);
-        sheetFreshController.setColumnArray("Output", colOutput.textField);
+        OneColumn colOutput = new OneColumn("Output");
+        panel.add(colOutput, c);
+        columnArray[3] = colOutput;
 
         c = new GridBagConstraints();
         panelMain.add(panel, c);
 
         c.gridx = 1;
-        JButton btnRefresh = new JButton("Refresh");
         c.anchor = GridBagConstraints.CENTER;
-        btnRefresh.setPreferredSize(new Dimension(100, 50));
+        btnRefresh.setPreferredSize(BUTTON_DIM_REFRESH);
         panelMain.add(btnRefresh, c);
-        sheetFreshController.setButtonRefresh(btnRefresh);
 
         return panelMain;
     }
 
-    private class oneColumn {
-        private JPanel panel;
-        private JTextField textField;
 
-        private oneColumn (String label) {
-            final JTextField txtCol = new JTextField("A",5);
-            this.panel = new JPanel() {
-                @Override
-                public void setEnabled(boolean enabled) {
-                    super.setEnabled(enabled);
-                    txtCol.setEnabled(enabled);
-                }
-            };
-            this.textField = txtCol;
-            panel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.weightx = 1;
-
-            c.gridy = 0;
-            c.anchor = GridBagConstraints.CENTER;
-            panel.add(new JLabel(label), c);
-
-            c.gridy = 1;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            txtCol.setInputVerifier(new ColumnVerifier());
-            txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
-            panel.add(txtCol, c);
-        }
-
-    }
 
     private JPanel createGeneratePanel() {
         TitledPanel panel = new TitledPanel("Generate QR Code");
@@ -424,7 +385,17 @@ public class MainView extends JFrame implements Observer {
                 .setProgressIndicator(prgIndicator)
                 .control();
 
+        SheetFreshController sheetFreshController = new SheetFreshController();
+        sheetFreshController.setButtonRefresh(btnRefresh)
+                .setComSheets(cbbSheet)
+                .setRowFields(txtRowFrom, txtRowTo)
+                .setSheetMessage(lblSheetMessage)
+                .setProgressIndicator(prgIndicator);
+        for (OneColumn column: columnArray) {
+            sheetFreshController.setColumnArray(column.getString(), column.getTextField());
+        }
         sheetFreshController.control();
+
     }
 
     /**
