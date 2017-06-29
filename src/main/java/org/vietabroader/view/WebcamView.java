@@ -4,13 +4,11 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 import org.vietabroader.controller.WebcamController;
-import org.vietabroader.model.GlobalState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Observer;
 
 public class WebcamView extends JFrame {
 
