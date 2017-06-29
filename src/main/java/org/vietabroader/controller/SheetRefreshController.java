@@ -104,9 +104,6 @@ public class SheetRefreshController implements Controller {
                 lblSheetMessage.setText("The sheet has been refreshed at " + new Timestamp(now));
                 logger.info("The sheet has been refreshed");
 
-                for (int i = 0; i < 10; i++) {
-                    logger.info("Key, " + i + ": " + spreadsheet.readValue("Key", i).toString());
-                }
             } catch (Exception e) {
                 lblSheetMessage.setBackground(Color.RED);
                 lblSheetMessage.setForeground(Color.WHITE);
