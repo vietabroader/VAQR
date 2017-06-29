@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * This class models a Google spreadsheet and is specialized for VAQR. It hides
- * away Sheets API calls and caches the select cell values in local memory.
+ * away Sheets API calls and caches the selected cell values in local memory.
  */
 public class VASpreadsheet {
 
