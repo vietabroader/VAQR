@@ -12,6 +12,7 @@ public class OneColumn extends JPanel {
     public OneColumn (String label) {
         final JTextField txtCol = new JTextField("A",5);
         this.textField = txtCol;
+        this.label = label;
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

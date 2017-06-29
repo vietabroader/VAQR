@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
-import org.vietabroader.controller.SheetFreshController;
+import org.vietabroader.controller.SheetRefreshController;
 import org.vietabroader.controller.SpreadsheetConnectController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
@@ -385,16 +385,16 @@ public class MainView extends JFrame implements Observer {
                 .setProgressIndicator(prgIndicator)
                 .control();
 
-        SheetFreshController sheetFreshController = new SheetFreshController();
-        sheetFreshController.setButtonRefresh(btnRefresh)
+        SheetRefreshController sheetRefreshController = new SheetRefreshController();
+        sheetRefreshController.setButtonRefresh(btnRefresh)
                 .setComSheets(cbbSheet)
                 .setRowFields(txtRowFrom, txtRowTo)
                 .setSheetMessage(lblSheetMessage)
                 .setProgressIndicator(prgIndicator);
         for (OneColumn column: columnArray) {
-            sheetFreshController.setColumnArray(column.getString(), column.getTextField());
+            sheetRefreshController.setColumnArray(column.getString(), column.getTextField());
         }
-        sheetFreshController.control();
+        sheetRefreshController.control();
 
     }
 

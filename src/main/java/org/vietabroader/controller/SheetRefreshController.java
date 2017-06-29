@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class SheetFreshController implements Controller {
-    private static final Logger logger = LoggerFactory.getLogger(SheetFreshController.class);
+public class SheetRefreshController implements Controller {
+    private static final Logger logger = LoggerFactory.getLogger(SheetRefreshController.class);
 
     private JButton btnRefresh;
     private JComboBox comSheets;
@@ -22,33 +22,33 @@ public class SheetFreshController implements Controller {
     private HashMap<String, JTextField> columnArray = new HashMap<>();
     private JProgressBar prgIndicator;
 
-    public SheetFreshController setButtonRefresh(JButton btn) {
+    public SheetRefreshController setButtonRefresh(JButton btn) {
         btnRefresh = btn;
         return this;
     }
 
-    public SheetFreshController setComSheets(JComboBox com) {
+    public SheetRefreshController setComSheets(JComboBox com) {
         comSheets = com;
         return this;
     }
 
-    public SheetFreshController setRowFields(JTextField from, JTextField to) {
+    public SheetRefreshController setRowFields(JTextField from, JTextField to) {
         txtRowFrom = from;
         txtRowTo = to;
         return this;
     }
 
-    public SheetFreshController setSheetMessage(JLabel sheet) {
+    public SheetRefreshController setSheetMessage(JLabel sheet) {
         lblSheetMessage = sheet;
         return this;
     }
 
-    public SheetFreshController setColumnArray(String column, JTextField txt) {
+    public SheetRefreshController setColumnArray(String column, JTextField txt) {
         columnArray.put(column, txt);
         return this;
     }
 
-    public SheetFreshController setProgressIndicator(JProgressBar prg) {
+    public SheetRefreshController setProgressIndicator(JProgressBar prg) {
         prgIndicator = prg;
         return this;
     }
@@ -103,13 +103,17 @@ public class SheetFreshController implements Controller {
                 long now = Calendar.getInstance().getTimeInMillis();
                 lblSheetMessage.setText("The sheet has been refreshed at " + new Timestamp(now));
                 logger.info("The sheet has been refreshed");
+
+                for (int i = 0; i < 10; i++) {
+                    logger.info("Key, " + i + ": " + spreadsheet.readValue("Key", i).toString());
+                }
             } catch (Exception e) {
                 lblSheetMessage.setBackground(Color.RED);
                 lblSheetMessage.setForeground(Color.WHITE);
                 lblSheetMessage.setText("The sheet cannot be refreshed ");
                 logger.error("Cannot refresh the sheet" + e);
             }
-            prgIndicator.setIndeterminate(true);
+            prgIndicator.setIndeterminate(false);
         }
     }
 }
