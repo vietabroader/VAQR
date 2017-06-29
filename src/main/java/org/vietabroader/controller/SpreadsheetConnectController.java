@@ -44,7 +44,8 @@ public class SpreadsheetConnectController implements Controller {
         btnSpreadsheetConnect.addActionListener(e -> {
             GlobalState currentState = GlobalState.getInstance();
             if (currentState.getStatus() == GlobalState.Status.SIGNED_IN
-                    || currentState.getStatus() == GlobalState.Status.CONNECTED) {
+                    || currentState.getStatus() == GlobalState.Status.CONNECTED
+                    || currentState.getStatus() == GlobalState.Status.REFRESHED) {
                 String spreadsheetId = txtSpreadsheetConnect.getText().trim();
                 if (spreadsheetId.isEmpty()) {
                     lblSpreadsheetMessage.setBackground(Color.YELLOW);
