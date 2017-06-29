@@ -11,6 +11,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -25,18 +26,55 @@ public class WebcamController implements Controller {
         // TODO: put QR reading code here
     }
 
+    public class PrimeNumbersTask extends SwingWorker<String, Integer> {
+        PrimeNumbersTask(JTextArea textArea, int numbersToFind) {
+            //initialize
+        }
 
-//    public class QRreader extends SwingWorker<List<Integer>, Integer> {
-//        @Override
-//        protected String doInBackground() throws Exception {
-//            return "";
-//        }
-//
-//        @Override
-//        protected void process(List<Integer> something) {
-//
-//        }
-//    }
+        @Override
+        public String doInBackground() {
+            do {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Result result = null;
+                BufferedImage image = null;
+
+                if (webcam.isOpen()) {
+
+                    if ((image = webcam.getImage()) == null) {
+                        continue;
+                    }
+
+                    LuminanceSource source = new BufferedImageLuminanceSource(image);
+                    BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                    try {
+                        result = new MultiFormatReader().decode(bitmap);
+                    } catch (NotFoundException e) {
+                        // fall thru, it means there is no QR code in image
+                    }
+                }
+
+                if (result != null) {
+                    textarea.setText(result.getText());
+                }
+
+            } while (true);
+        }
+        return numbers;
+    }
+
+    @Override
+    protected void process(List<Integer> chunks) {
+        for (int number : chunks) {
+            textArea.append(number + "\n");
+        }
+    }
+}
 
 }
 
