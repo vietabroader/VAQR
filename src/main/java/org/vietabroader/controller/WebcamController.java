@@ -1,10 +1,18 @@
 package org.vietabroader.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
 import org.vietabroader.view.WebcamView;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 
 import com.google.zxing.BinaryBitmap;
@@ -16,9 +24,14 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
 public class WebcamController implements Controller {
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private Webcam webcam;
+    private WebcamPanel webcamPanel;
+    private List<String> qrUrl = new ArrayList<String>();
 
-    public WebcamController() {
-
+    public WebcamController setWebcamPanel(Webcam cam) {
+        webcam = cam;
+        return this;
     }
 
     @Override
@@ -26,13 +39,10 @@ public class WebcamController implements Controller {
         // TODO: put QR reading code here
     }
 
-    public class PrimeNumbersTask extends SwingWorker<String, Integer> {
-        PrimeNumbersTask(JTextArea textArea, int numbersToFind) {
-            //initialize
-        }
+    public class qrReaderWorker extends SwingWorker<Integer, String> {
 
         @Override
-        public String doInBackground() {
+        public Integer doInBackground() {
             do {
                 try {
                     Thread.sleep(100);
@@ -60,22 +70,25 @@ public class WebcamController implements Controller {
                 }
 
                 if (result != null) {
-                    textarea.setText(result.getText());
+//                    qrUrl.add(result.getText());
+//                    System.out.println(qrUrl);
+                    System.out.println(result.getText());
                 }
 
-            } while (true);
-        }
-        return numbers;
-    }
+            } while (!isCancelled());
 
-    @Override
-    protected void process(List<Integer> chunks) {
-        for (int number : chunks) {
-            textArea.append(number + "\n");
+            return 1;
+        }
+
+
+        @Override
+        protected void process(List<String> chunks) {
+            //        for (final String string : chunks) {
+            //            messagesTextArea.append(string);
+            //            messagesTextArea.append("\n");
+            //        }
         }
     }
-}
-
 }
 
 // process method that can run at the same time
