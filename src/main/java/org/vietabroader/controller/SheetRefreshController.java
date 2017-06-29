@@ -59,7 +59,7 @@ public class SheetRefreshController implements Controller {
 
             GlobalState currentState = GlobalState.getInstance();
 
-            if (currentState.getStatus() == GlobalState.Status.CONNECTED) {
+            if (currentState.getStatus() == GlobalState.Status.CONNECTED || currentState.getStatus() == GlobalState.Status.REFRESHED) {
 
                 VASpreadsheet spreadsheet = currentState.getSpreadsheet();
 
@@ -100,6 +100,12 @@ public class SheetRefreshController implements Controller {
                 VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
                 spreadsheet.refreshAllColumns();
 
+                GlobalState currentState = GlobalState.getInstance();
+                currentState.setStatus(GlobalState.Status.REFRESHED);
+
+                lblSheetMessage.setBackground(Color.GREEN);
+                lblSheetMessage.setForeground(Color.BLACK);
+
                 long now = Calendar.getInstance().getTimeInMillis();
                 lblSheetMessage.setText("The sheet has been refreshed at " + new Timestamp(now));
                 logger.info("The sheet has been refreshed");
@@ -108,6 +114,7 @@ public class SheetRefreshController implements Controller {
                 lblSheetMessage.setBackground(Color.RED);
                 lblSheetMessage.setForeground(Color.WHITE);
                 lblSheetMessage.setText("The sheet cannot be refreshed ");
+
                 logger.error("Cannot refresh the sheet" + e);
             }
             prgIndicator.setIndeterminate(false);

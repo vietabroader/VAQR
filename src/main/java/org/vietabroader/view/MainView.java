@@ -51,7 +51,7 @@ public class MainView extends JFrame implements Observer {
 
         @Override
         public void setEnabled(boolean b) {
-            this.setEnabled(b);
+            super.setEnabled(b);
             Component[] children = this.getComponents();
             for (Component child: children) {
                 child.setEnabled(b);
@@ -290,7 +290,16 @@ public class MainView extends JFrame implements Observer {
     }
 
     private JPanel createColumnPanel() {
-        JPanel panelMain = new JPanel();
+        JPanel panelMain = new JPanel() {
+            @Override
+            public void setEnabled(boolean b) {
+                super.setEnabled(b);
+                Component[] children = this.getComponents();
+                for (Component child: children) {
+                    child.setEnabled(b);
+                }
+            }
+        };
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
@@ -451,21 +460,22 @@ public class MainView extends JFrame implements Observer {
                 cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
                 break;
-            case QR_READING:
-                setEnabledChildren(false);
-                break;
             case REFRESHED:
                 setEnabledChildren(true);
                 panWebcam.setEnabled(true);
                 break;
+            case QR_READING:
+                setEnabledChildren(false);
+                break;
+
         }
     }
 
-    public void setEnabledChildren(boolean b) {
+    private void setEnabledChildren(boolean b) {
         panSignIn.setEnabled(b);
         panSpreadsheet.setEnabled(b);
         panWorkspace.setEnabled(b);
-        panWebcam.setEnabled(b);
+        columnArray[1].setEnabled(false);
     }
 
 }
