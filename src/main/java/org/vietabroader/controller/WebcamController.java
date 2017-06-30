@@ -7,8 +7,6 @@ import com.github.sarxos.webcam.WebcamPanel;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +19,7 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
+import org.vietabroader.model.GlobalState;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -61,6 +60,7 @@ public class WebcamController implements Controller {
             public void windowClosing(WindowEvent e){
                 worker.cancel(false);
                 webcamPanel.stop();
+                GlobalState.getInstance().setStatus(GlobalState.Status.REFRESHED);
             }
         });
 

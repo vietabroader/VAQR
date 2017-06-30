@@ -27,6 +27,7 @@ class WebcamView extends JFrame {
         webcam.setViewSize(size);
         webcamPanel = new WebcamPanel(webcam);
         webcamPanel.setPreferredSize(size);
+        webcamPanel.setMirrored(true);
 
         // Lay out components in the frame
         JPanel panWebcam = new JPanel();

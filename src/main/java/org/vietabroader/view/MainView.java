@@ -476,6 +476,9 @@ public class MainView extends JFrame implements Observer {
         panSignIn.setEnabled(b);
         panSpreadsheet.setEnabled(b);
         panWorkspace.setEnabled(b);
+        panWebcam.setEnabled(b);
+
+        // TODO: enable or remove secret column in next version
         columnArray[1].setEnabled(false);
     }
 
