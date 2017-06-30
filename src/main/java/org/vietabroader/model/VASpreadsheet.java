@@ -182,7 +182,7 @@ public class VASpreadsheet {
 
 
     public static class VASpreadsheetException extends Exception {
-        public VASpreadsheetException(String msg) {
+        VASpreadsheetException(String msg) {
             super(msg);
         }
     }

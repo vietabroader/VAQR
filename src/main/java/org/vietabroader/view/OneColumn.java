@@ -10,7 +10,7 @@ public class OneColumn extends JPanel {
     private final JLabel lblCol;
 
     OneColumn (String label) {
-        txtCol = new JTextField("A",5);
+        txtCol = new JTextField("A", 5);
         lblCol = new JLabel(label);
 
         this.setLayout(new GridBagLayout());

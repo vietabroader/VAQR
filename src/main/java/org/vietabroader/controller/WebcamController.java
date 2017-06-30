@@ -6,11 +6,9 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.*;
 import java.awt.image.BufferedImage;
-
+import java.awt.event.WindowEvent;
+import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
