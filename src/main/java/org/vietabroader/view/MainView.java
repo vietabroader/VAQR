@@ -440,12 +440,14 @@ public class MainView extends JFrame implements Observer {
         switch (currentStatus) {
             case SIGNED_OUT:
                 resetOnSignedOut();
+
                 setEnabledChildren(false);
                 panSignIn.setEnabled(true);
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
                 lblAuthMessage.setText(currentState.getUserEmail());
+
                 setEnabledChildren(false);
                 panSignIn.setEnabled(true);
                 panSpreadsheet.setEnabled(true);
@@ -456,14 +458,15 @@ public class MainView extends JFrame implements Observer {
                 lblSpreadsheetMessage.setBackground(Color.GREEN);
                 lblSpreadsheetMessage.setForeground(Color.BLACK);
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
-                setEnabledChildren(true);
                 List<String> sheets = currentSpreadsheet.getSheetTitles();
                 cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
+
+                setEnabledChildren(true);
+//                panWebcam.setEnabled(false);
                 break;
             case REFRESHED:
                 setEnabledChildren(true);
-                panWebcam.setEnabled(true);
                 break;
             case QR_READING:
                 setEnabledChildren(false);
@@ -476,7 +479,7 @@ public class MainView extends JFrame implements Observer {
         panSignIn.setEnabled(b);
         panSpreadsheet.setEnabled(b);
         panWorkspace.setEnabled(b);
-        panWebcam.setEnabled(b);
+//        panWebcam.setEnabled(b);
 
         // TODO: enable or remove secret column in next version
         columnArray[1].setEnabled(false);
