@@ -29,14 +29,16 @@ public class WebcamController implements Controller {
     private WebcamPanel webcamPanel;
     private List<String> qrUrl = new ArrayList<String>();
 
-    public WebcamController setWebcamPanel(Webcam cam) {
+    public WebcamController setWebcam(Webcam cam, WebcamPanel panel) {
         webcam = cam;
+        webcamPanel = panel;
         return this;
     }
 
     @Override
     public void control() {
         // TODO: put QR reading code here
+        (new qrReaderWorker()).execute();
     }
 
     public class qrReaderWorker extends SwingWorker<Integer, String> {
@@ -88,6 +90,10 @@ public class WebcamController implements Controller {
             //            messagesTextArea.append("\n");
             //        }
         }
+
+//        private void cancel() {
+//            searchWorker.cancel(true);
+//        }
     }
 }
 
