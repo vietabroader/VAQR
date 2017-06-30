@@ -29,8 +29,8 @@ public class GlobalState extends Observable {
         SIGNED_OUT,
         SIGNED_IN,
         CONNECTED,
-        QR_READING,
-        REFRESHED
+        REFRESHED,
+        QR_READING
     }
 
     private Status status;
