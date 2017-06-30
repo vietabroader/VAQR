@@ -4,14 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
-import org.vietabroader.view.WebcamView;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 
@@ -25,37 +24,58 @@ import com.google.zxing.common.HybridBinarizer;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    private final int READER_SLEEP_TIME_MS = 700;
+
     private Webcam webcam;
     private WebcamPanel webcamPanel;
-    private List<String> qrUrl = new ArrayList<String>();
-    private JLabel lblWebcamMessage = new JLabel();
+    private JFrame webcamView;
+    private JTextField txtWebcamMessage;
 
-    public WebcamController setWebcam(Webcam cam, WebcamPanel panel, JLabel label) {
+    public WebcamController setWebcam(Webcam cam) {
         webcam = cam;
-        webcamPanel = panel;
-        lblWebcamMessage = label;
+        return this;
+    }
+
+    public WebcamController setWebcamView(JFrame view) {
+        webcamView = view;
+        return this;
+    }
+
+    public WebcamController setWebcamPanel(WebcamPanel pan) {
+        webcamPanel = pan;
+        return this;
+    }
+
+    public WebcamController setTextWebcamMessage(JTextField txt) {
+        txtWebcamMessage = txt;
         return this;
     }
 
     @Override
     public void control() {
-        // TODO: put QR reading code here
-        (new qrReaderWorker()).execute();
+        SwingWorker<Void, String> worker = new QRReaderWorker();
+
+        webcamView.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                worker.cancel(false);
+                webcamPanel.stop();
+            }
+        });
+
+        worker.execute();
     }
 
-    public class qrReaderWorker extends SwingWorker<Integer, String> {
+    public class QRReaderWorker extends SwingWorker<Void, String> {
 
         @Override
-        public Integer doInBackground() {
+        public Void doInBackground() throws InterruptedException {
             do {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(READER_SLEEP_TIME_MS);
 
                 Result result = null;
-                BufferedImage image = null;
+                BufferedImage image;
 
                 if (webcam.isOpen()) {
 
@@ -75,25 +95,11 @@ public class WebcamController implements Controller {
 
                 if (result != null) {
                     System.out.println(result.getText());
-                    lblWebcamMessage.setText(result.getText());
+                    txtWebcamMessage.setText(result.getText());
                 }
-
             } while (!isCancelled());
 
-            return 1;
+            return null;
         }
-
-
-        @Override
-        protected void process(List<String> chunks) {
-            //        for (final String string : chunks) {
-            //            messagesTextArea.append(string);
-            //            messagesTextArea.append("\n");
-            //        }
-        }
-
-//        private void cancel() {
-//            searchWorker.cancel(true);
-//        }
     }
 }
