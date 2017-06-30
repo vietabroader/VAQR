@@ -28,10 +28,12 @@ public class WebcamController implements Controller {
     private Webcam webcam;
     private WebcamPanel webcamPanel;
     private List<String> qrUrl = new ArrayList<String>();
+    private JLabel lblWebcamMessage = new JLabel();
 
-    public WebcamController setWebcam(Webcam cam, WebcamPanel panel) {
+    public WebcamController setWebcam(Webcam cam, WebcamPanel panel, JLabel label) {
         webcam = cam;
         webcamPanel = panel;
+        lblWebcamMessage = label;
         return this;
     }
 
@@ -72,9 +74,8 @@ public class WebcamController implements Controller {
                 }
 
                 if (result != null) {
-//                    qrUrl.add(result.getText());
-//                    System.out.println(qrUrl);
                     System.out.println(result.getText());
+                    lblWebcamMessage.setText(result.getText());
                 }
 
             } while (!isCancelled());
@@ -96,20 +97,3 @@ public class WebcamController implements Controller {
 //        }
     }
 }
-
-// process method that can run at the same time
-// publish method
-
-// do in background
-// check if the qr code exists in the list ->
-// sleep in the while loop since it runs too fast
-//
-//while {
-//    publish method -> run the process method
-
-
-    // set function in view and set in controller
-    // set webcam view(this)
-
-    // stop webcam frame when window is closed
-    // is cancelled in
