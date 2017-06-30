@@ -60,6 +60,7 @@ public class WebcamView extends JFrame {
 
     private void initControllers() {
         WebcamController webcamController = new WebcamController();
+        webcamController.setWebcam(webcam, webcamPanel, lblWebcamMessage).control();
     }
 
 }
