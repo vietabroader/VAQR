@@ -6,13 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OneColumn extends JPanel {
-    private JTextField textField;
-    private String label;
+    private final JTextField txtCol;
+    private final JLabel lblCol;
 
-    public OneColumn (String label) {
-        final JTextField txtCol = new JTextField("A",5);
-        this.textField = txtCol;
-        this.label = label;
+    OneColumn (String label) {
+        txtCol = new JTextField("A",5);
+        lblCol = new JLabel(label);
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -21,7 +20,7 @@ public class OneColumn extends JPanel {
 
         c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
-        this.add(new JLabel(label), c);
+        this.add(lblCol, c);
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -33,15 +32,15 @@ public class OneColumn extends JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        textField.setEnabled(enabled);
+        txtCol.setEnabled(enabled);
     }
 
-    public JTextField getTextField() {
-        return this.textField;
+    JTextField getTextField() {
+        return this.txtCol;
     }
 
-    public String getString() {
-        return this.label;
+    String getLabelText() {
+        return this.lblCol.getText();
     }
 
 }

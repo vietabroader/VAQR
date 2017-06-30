@@ -313,6 +313,7 @@ public class MainView extends JFrame implements Observer {
 
         c.gridx = 1;
         OneColumn colSecret = new OneColumn("Secret");
+        // TODO: enable or remove secret column in next version
         colSecret.setEnabled(false);
         panel.add(colSecret, c);
         columnArray[1] = colSecret;
@@ -421,7 +422,7 @@ public class MainView extends JFrame implements Observer {
                 .setSheetMessage(lblSheetMessage)
                 .setProgressIndicator(prgIndicator);
         for (OneColumn column: columnArray) {
-            sheetRefreshController.setColumnArray(column.getString(), column.getTextField());
+            sheetRefreshController.setColumnArray(column.getLabelText(), column.getTextField());
         }
         sheetRefreshController.control();
 
