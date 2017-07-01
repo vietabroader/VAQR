@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 /**
  * This class models a Google spreadsheet and is specialized for VAQR. It hides
- * away Sheets API calls and caches the select cell values in local memory.
+ * away Sheets API calls and caches the selected cell values in local memory.
  */
 public class VASpreadsheet {
 
@@ -143,6 +143,14 @@ public class VASpreadsheet {
     }
 
     /**
+     * Remove all column names in columnNameToChar
+     *
+     */
+    public void removeAllColumns() {
+        this.columnNameToChar.clear();
+    }
+
+    /**
      * Read a named column in this cache
      *
      * @param colName name of the column
@@ -207,7 +215,7 @@ public class VASpreadsheet {
     }
 
     public static class VASpreadsheetException extends Exception {
-        public VASpreadsheetException(String msg) {
+        VASpreadsheetException(String msg) {
             super(msg);
         }
     }

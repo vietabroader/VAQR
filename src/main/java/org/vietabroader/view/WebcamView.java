@@ -9,13 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Observer;
 
-public class WebcamView extends JFrame {
+class WebcamView extends JFrame {
 
     private final Webcam webcam = Webcam.getDefault();
     private WebcamPanel webcamPanel;
-    private final JLabel lblWebcamMessage = new JLabel("Webcam message");
+    private final JTextField txtWebcamMessage = new JTextField("Webcam message");
 
     WebcamView() {
         initUI();
@@ -28,6 +27,7 @@ public class WebcamView extends JFrame {
         webcam.setViewSize(size);
         webcamPanel = new WebcamPanel(webcam);
         webcamPanel.setPreferredSize(size);
+        webcamPanel.setMirrored(true);
 
         // Lay out components in the frame
         JPanel panWebcam = new JPanel();
@@ -40,19 +40,13 @@ public class WebcamView extends JFrame {
 
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        lblWebcamMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-        panWebcam.add(lblWebcamMessage, c);
+        txtWebcamMessage.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        txtWebcamMessage.setEnabled(false);
+        panWebcam.add(txtWebcamMessage, c);
 
         // Configure the frame
         this.setTitle("QR Reader");
         this.add(panWebcam);
-
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e){
-                webcamPanel.stop();
-            }
-        });
 
         this.setResizable(false);
         this.pack();
@@ -61,6 +55,11 @@ public class WebcamView extends JFrame {
 
     private void initControllers() {
         WebcamController webcamController = new WebcamController();
+        webcamController.setWebcam(webcam)
+                .setWebcamView(this)
+                .setWebcamPanel(webcamPanel)
+                .setTextWebcamMessage(txtWebcamMessage)
+                .control();
     }
 
 }

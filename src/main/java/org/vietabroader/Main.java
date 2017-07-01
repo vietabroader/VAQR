@@ -10,6 +10,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             MainView view = new MainView();
             GlobalState.getInstance().addObserver(view);
+            GlobalState.getInstance().setStatus(GlobalState.Status.SIGNED_OUT);
             view.setVisible(true);
         });
     }

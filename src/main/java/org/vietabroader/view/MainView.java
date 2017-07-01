@@ -4,19 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vietabroader.GoogleAPIUtils;
 import org.vietabroader.controller.AuthenticationController;
+import org.vietabroader.controller.SheetRefreshController;
 import org.vietabroader.controller.SpreadsheetConnectController;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
-import org.vietabroader.view.verifier.ColumnVerifier;
 import org.vietabroader.view.verifier.RowVerifier;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.List;
 import java.util.Observer;
@@ -46,6 +47,15 @@ public class MainView extends JFrame implements Observer {
                     new TitledBorder(title),
                     new EmptyBorder(8, 2, 8, 2))    // Inner padding of each panel
             );
+        }
+
+        @Override
+        public void setEnabled(boolean b) {
+            super.setEnabled(b);
+            Component[] children = this.getComponents();
+            for (Component child: children) {
+                child.setEnabled(b);
+            }
         }
     }
 
@@ -77,9 +87,11 @@ public class MainView extends JFrame implements Observer {
     private final String BUTTON_TEXT_SIGN_OUT = "Sign Out";
     private final String LABEL_TEXT_SIGN_IN = "Please sign in with your Google account";
     private final String BUTTON_TEXT_CONNECT = "Connect";
+    private final String BUTTON_TEXT_REFRESH = "Refresh";
 
     private final Dimension BUTTON_DIM_AUTHENTICATE = new Dimension(100, 30);
     private final Dimension LABEL_DIM_EMAIL = new Dimension(300, 15);
+    private final Dimension BUTTON_DIM_REFRESH = new Dimension(100, 50);
 
     private final JButton btnAuthenticate = new JButton(BUTTON_TEXT_SIGN_IN);
     private final JLabel lblAuthMessage = new JLabel(LABEL_TEXT_SIGN_IN);
@@ -89,7 +101,17 @@ public class MainView extends JFrame implements Observer {
     private final MessageLabel lblSheetMessage = new MessageLabel(" ");
     private final JComboBox<String> cbbSheet = new JComboBox<>();
     private final JProgressBar prgIndicator = new JProgressBar();
+    private final JButton btnRefresh = new JButton(BUTTON_TEXT_REFRESH);
+    private final JTextField txtRowFrom = new JTextField("1",5);
+    private final JTextField txtRowTo = new JTextField("1",5);
+    private final OneColumn[] columnArray = new OneColumn[4];
 
+    private final JPanel panSignIn = createSignInPanel();
+    private final JPanel panSpreadsheet = createSpreadsheetPanel();
+    private final JPanel panWorkspace = createWorkspacePanel();
+    private final JPanel panGenerate = createGeneratePanel();
+    private final JPanel panWebcam = createWebcamPanel();
+    private final JPanel panFooter = createFooterPanel();
 
     public MainView() {
         initUI();
@@ -122,11 +144,12 @@ public class MainView extends JFrame implements Observer {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(4, 4, 4, 4);  // Outer margin of each panel
-        panelMain.add(createSignInPanel(), c);
+
+        panelMain.add(panSignIn, c);
 
         // Spreadsheet connect panel
         c.gridy = 2;
-        panelMain.add(createSpreadsheetPanel(), c);
+        panelMain.add(panSpreadsheet, c);
 
         c.gridy = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -136,7 +159,7 @@ public class MainView extends JFrame implements Observer {
 
         // Sheet workspace panel
         c.gridy = 4;
-        panelMain.add(createWorkspacePanel(), c);
+        panelMain.add(panWorkspace, c);
 
         c.gridy = 5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -150,16 +173,23 @@ public class MainView extends JFrame implements Observer {
         c.weightx = 1 / 2.0;
         c.gridx = 0;
         c.fill = GridBagConstraints.BOTH;
-        panelMain.add(createGeneratePanel(), c);
+        panelMain.add(panGenerate, c);
 
         c.gridx = 1;
-        panelMain.add(createWebcamPanel(), c);
+        panelMain.add(panWebcam, c);
 
         c.gridy = 7;
         c.gridx = 0;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 0);
-        panelMain.add(createFooterPanel(), c);
+        panelMain.add(panFooter, c);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                GoogleAPIUtils.signOut();
+            }
+        });
 
         this.setTitle("VAQR");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -233,7 +263,7 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 1;
         c.anchor = GridBagConstraints.CENTER;
         c.weightx = 2/6.0;
-        final JTextField txtRowFrom = new JTextField("1",5);
+
         txtRowFrom.setInputVerifier(new RowVerifier());
         txtRowFrom.setToolTipText("Enter a positive integer");
         panel.add(txtRowFrom, c);
@@ -244,7 +274,6 @@ public class MainView extends JFrame implements Observer {
 
         c.gridx = 3;
         c.weightx = 2/6.0;
-        final JTextField txtRowTo = new JTextField("1",5);
         txtRowTo.setInputVerifier(new RowVerifier());
         txtRowTo.setToolTipText("Enter a positive integer");
         panel.add(txtRowTo, c);
@@ -261,7 +290,16 @@ public class MainView extends JFrame implements Observer {
     }
 
     private JPanel createColumnPanel() {
-        JPanel panelMain = new JPanel();
+        JPanel panelMain = new JPanel() {
+            @Override
+            public void setEnabled(boolean b) {
+                super.setEnabled(b);
+                Component[] children = this.getComponents();
+                for (Component child: children) {
+                    child.setEnabled(b);
+                }
+            }
+        };
         TitledPanel panel = new TitledPanel("Key Columns");
         GridBagConstraints c = new GridBagConstraints();
 
@@ -269,60 +307,39 @@ public class MainView extends JFrame implements Observer {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
-        final JPanel panKey = createOneColumn("Key");
-        panel.add(panKey, c);
+        OneColumn colKey = new OneColumn("Key");
+        panel.add(colKey, c);
+        columnArray[0] = colKey;
 
         c.gridx = 1;
-        final JPanel panSecret = createOneColumn("Secret");
-        panSecret.setEnabled(false);
-        panel.add(panSecret, c);
+        OneColumn colSecret = new OneColumn("Secret");
+        // TODO: enable or remove secret column in next version
+        colSecret.setEnabled(false);
+        panel.add(colSecret, c);
+        columnArray[1] = colSecret;
 
         c.gridx = 2;
-        final JPanel panQR = createOneColumn("QR");
-        panel.add(panQR, c);
+        OneColumn colQR = new OneColumn("QR");
+        panel.add(colQR, c);
+        columnArray[2] = colQR;
 
         c.gridx = 3;
-        final JPanel panOutput = createOneColumn("Output");
-        panel.add(panOutput, c);
+        OneColumn colOutput = new OneColumn("Output");
+        panel.add(colOutput, c);
+        columnArray[3] = colOutput;
 
         c = new GridBagConstraints();
         panelMain.add(panel, c);
 
         c.gridx = 1;
-        JButton btnRefresh = new JButton("Refresh");
         c.anchor = GridBagConstraints.CENTER;
-        btnRefresh.setPreferredSize(new Dimension(100, 50));
+        btnRefresh.setPreferredSize(BUTTON_DIM_REFRESH);
         panelMain.add(btnRefresh, c);
 
         return panelMain;
     }
 
-    private JPanel createOneColumn(String label) {
-        final JTextField txtCol = new JTextField("A",5);
-        JPanel panel = new JPanel() {
-            @Override
-            public void setEnabled(boolean enabled) {
-                super.setEnabled(enabled);
-                txtCol.setEnabled(enabled);
-            }
-        };
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 1;
-
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.CENTER;
-        panel.add(new JLabel(label), c);
-
-        c.gridy = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        txtCol.setInputVerifier(new ColumnVerifier());
-        txtCol.setToolTipText("Enter a valid column name. Ex: A, AB, ...");
-        panel.add(txtCol, c);
-
-        return panel;
-    }
 
     private JPanel createGeneratePanel() {
         TitledPanel panel = new TitledPanel("Generate QR Code");
@@ -354,6 +371,9 @@ public class MainView extends JFrame implements Observer {
         btnWebcam.addActionListener(e -> {
             WebcamView camView = new WebcamView();
             camView.setVisible(true);
+
+            GlobalState currentState = GlobalState.getInstance();
+            currentState.setStatus(GlobalState.Status.QR_READING);
         });
 
         return panel;
@@ -394,6 +414,18 @@ public class MainView extends JFrame implements Observer {
                 .setLabelSpreadsheetMessage(lblSpreadsheetMessage)
                 .setProgressIndicator(prgIndicator)
                 .control();
+
+        SheetRefreshController sheetRefreshController = new SheetRefreshController();
+        sheetRefreshController.setButtonRefresh(btnRefresh)
+                .setComSheets(cbbSheet)
+                .setRowFields(txtRowFrom, txtRowTo)
+                .setSheetMessage(lblSheetMessage)
+                .setProgressIndicator(prgIndicator);
+        for (OneColumn column: columnArray) {
+            sheetRefreshController.setColumnArray(column.getLabelText(), column.getTextField());
+        }
+        sheetRefreshController.control();
+
     }
 
     /**
@@ -408,10 +440,17 @@ public class MainView extends JFrame implements Observer {
         switch (currentStatus) {
             case SIGNED_OUT:
                 resetOnSignedOut();
+
+                setEnabledChildren(false);
+                panSignIn.setEnabled(true);
                 break;
             case SIGNED_IN:
                 btnAuthenticate.setText(BUTTON_TEXT_SIGN_OUT);
                 lblAuthMessage.setText(currentState.getUserEmail());
+
+                setEnabledChildren(false);
+                panSignIn.setEnabled(true);
+                panSpreadsheet.setEnabled(true);
                 break;
             case CONNECTED:
                 VASpreadsheet currentSpreadsheet = currentState.getSpreadsheet();
@@ -419,14 +458,32 @@ public class MainView extends JFrame implements Observer {
                 lblSpreadsheetMessage.setBackground(Color.GREEN);
                 lblSpreadsheetMessage.setForeground(Color.BLACK);
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
-
                 List<String> sheets = currentSpreadsheet.getSheetTitles();
                 cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
+
+                setEnabledChildren(true);
+//                panWebcam.setEnabled(false);
+                break;
+            case REFRESHED:
+                setEnabledChildren(true);
                 break;
             case QR_READING:
+                setEnabledChildren(false);
                 break;
+
         }
     }
+
+    private void setEnabledChildren(boolean b) {
+        panSignIn.setEnabled(b);
+        panSpreadsheet.setEnabled(b);
+        panWorkspace.setEnabled(b);
+//        panWebcam.setEnabled(b);
+
+        // TODO: enable or remove secret column in next version
+        columnArray[1].setEnabled(false);
+    }
+
 }
 
