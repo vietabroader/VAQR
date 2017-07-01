@@ -4,8 +4,6 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.api.services.sheets.v4.Sheets.Spreadsheets.Values;
-import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import org.vietabroader.GoogleAPIUtils;
 
 import java.io.IOException;
@@ -13,9 +11,6 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.Iterator;
 
 /**
  * This class models a Google spreadsheet and is specialized for VAQR. It hides
