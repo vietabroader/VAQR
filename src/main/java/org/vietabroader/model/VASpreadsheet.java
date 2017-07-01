@@ -185,33 +185,30 @@ public class VASpreadsheet {
     }
 
     public int getNumRow()throws VASpreadsheetException{
-        int numrow = toRow-fromRow+1;
-        return (numrow);
+        return toRow - fromRow + 1;
     }
 
-    public void writeValue(String colName, int row, String val){
+    public void writeValue(String colName, int row, String val) {
         List<Object> contentList = cachedColumns.get(colName);
-        if (row > toRow) {
-            contentList.add(row-fromRow,val);
-            toRow = row;
-        } else {
-            contentList.set(row-fromRow,val);
-        }
+        contentList.set(row, val);
     }
 
     public void uploadOneColumn(String colName) throws
             IOException, GeneralSecurityException, VASpreadsheetException {
         List<Object> contentList = cachedColumns.get(colName);
-        String col = columnNameToChar.get(colName);
         List<List<Object>> values = new ArrayList<>();
         values.add(contentList);
+
+        String col = columnNameToChar.get(colName);
+        String range = col + fromRow + ":" + col + toRow;
         ValueRange body = new ValueRange()
                 .setMajorDimension("COLUMNS")
                 .setValues(values);
-        UpdateValuesResponse result =
-                GoogleAPIUtils.getSheetsService().spreadsheets().values().update(spreadsheetId, col+fromRow+":"+col+toRow, body)
-                        .setValueInputOption("RAW")
-                        .execute();
+
+        GoogleAPIUtils.getSheetsService().spreadsheets().values()
+                .update(spreadsheetId, range, body)
+                .setValueInputOption("RAW")
+                .execute();
     }
 
     public static class VASpreadsheetException extends Exception {

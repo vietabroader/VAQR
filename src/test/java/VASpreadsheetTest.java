@@ -155,7 +155,8 @@ public class VASpreadsheetTest {
         int numRow = testSpreadsheet.getNumRow();
         Assert.assertEquals(numRow,3);
     }
-    //https://docs.google.com/spreadsheets/d/1VanAqWzI8Z4g4lYW5gJEUR4KgQyIix89wSkPB63EAJI/
+
+    // https://docs.google.com/spreadsheets/d/1VanAqWzI8Z4g4lYW5gJEUR4KgQyIix89wSkPB63EAJI/
     @Test
     public void testWriteValue() throws
             IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
@@ -167,9 +168,15 @@ public class VASpreadsheetTest {
                 .setColumnChar(ITEM, "A")
                 .setRow(2, 4)
                 .refreshOneColumn(ITEM);
-        testSpreadsheet2.writeValue(ITEM,4,"Laptop");
+        testSpreadsheet2.writeValue(ITEM,2,"Empty");
         testSpreadsheet2.uploadOneColumn(ITEM);
+
+        testSpreadsheet2.writeValue(ITEM,2,"Laptop");
+        testSpreadsheet2.uploadOneColumn(ITEM);
+
+        testSpreadsheet2.writeValue(ITEM, 2, "Empty");
         testSpreadsheet2.refreshOneColumn(ITEM);
+
         List<Object> itemList = testSpreadsheet2.readCol(ITEM);
         assertList(itemList, "Book", "Chair", "Laptop");
     }
