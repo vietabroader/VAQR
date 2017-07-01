@@ -8,6 +8,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
@@ -22,7 +23,7 @@ import org.vietabroader.model.GlobalState;
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private final int READER_SLEEP_TIME_MS = 700;
+    private final int READER_SLEEP_TIME_MS = 1000;
 
     private Webcam webcam;
     private WebcamPanel webcamPanel;
@@ -92,12 +93,19 @@ public class WebcamController implements Controller {
                 }
 
                 if (result != null) {
-                    System.out.println(result.getText());
-                    txtWebcamMessage.setText(result.getText());
+                    publish(result.getText());
                 }
             } while (!isCancelled());
 
             return null;
+        }
+
+        @Override
+        protected void process(List<String> chunks) {
+            for (String result : chunks) {
+                System.out.println(result);
+                txtWebcamMessage.setText(result);
+            }
         }
     }
 }
