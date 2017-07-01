@@ -4,6 +4,8 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.api.services.sheets.v4.Sheets.Spreadsheets.Values;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import org.vietabroader.GoogleAPIUtils;
 
 import java.io.IOException;
@@ -11,6 +13,9 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * This class models a Google spreadsheet and is specialized for VAQR. It hides
@@ -179,7 +184,35 @@ public class VASpreadsheet {
         return col.get(row);
     }
 
+    public int getNumRow()throws VASpreadsheetException{
+        int numrow = toRow-fromRow+1;
+        return (numrow);
+    }
 
+    public void writeValue(String colName, int row, String val){
+        List<Object> contentList = cachedColumns.get(colName);
+        if (row > toRow) {
+            contentList.add(row-fromRow,val);
+            toRow = row;
+        } else {
+            contentList.set(row-fromRow,val);
+        }
+    }
+
+    public void uploadOneColumn(String colName) throws
+            IOException, GeneralSecurityException, VASpreadsheetException {
+        List<Object> contentList = cachedColumns.get(colName);
+        String col = columnNameToChar.get(colName);
+        List<List<Object>> values = new ArrayList<>();
+        values.add(contentList);
+        ValueRange body = new ValueRange()
+                .setMajorDimension("COLUMNS")
+                .setValues(values);
+        UpdateValuesResponse result =
+                GoogleAPIUtils.getSheetsService().spreadsheets().values().update(spreadsheetId, col+fromRow+":"+col+toRow, body)
+                        .setValueInputOption("RAW")
+                        .execute();
+    }
 
     public static class VASpreadsheetException extends Exception {
         VASpreadsheetException(String msg) {

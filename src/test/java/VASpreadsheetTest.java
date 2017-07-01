@@ -148,6 +148,32 @@ public class VASpreadsheetTest {
         testSpreadsheet.readValue(ITEM, 999);
     }
 
+    @Test
+    public void testGetNumRow() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        testSpreadsheet.setRow(2, 4);
+        int numRow = testSpreadsheet.getNumRow();
+        Assert.assertEquals(numRow,3);
+    }
+    //https://docs.google.com/spreadsheets/d/1VanAqWzI8Z4g4lYW5gJEUR4KgQyIix89wSkPB63EAJI/
+    @Test
+    public void testWriteValue() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String TEST_SPREADSHEET_ID2 = "1VanAqWzI8Z4g4lYW5gJEUR4KgQyIix89wSkPB63EAJI";
+        VASpreadsheet testSpreadsheet2 = new VASpreadsheet(TEST_SPREADSHEET_ID2);
+        testSpreadsheet2.connect();
+        String ITEM = "Item";
+        testSpreadsheet2.setSheetName("Receipt")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+        testSpreadsheet2.writeValue(ITEM,4,"Laptop");
+        testSpreadsheet2.uploadOneColumn(ITEM);
+        testSpreadsheet2.refreshOneColumn(ITEM);
+        List<Object> itemList = testSpreadsheet2.readCol(ITEM);
+        assertList(itemList, "Book", "Chair", "Laptop");
+    }
+
     private void assertList(List<Object> actual, Object... expected) {
         List<Object> expectedList = Arrays.asList(expected);
         Assert.assertEquals(expectedList.size(), actual.size());
