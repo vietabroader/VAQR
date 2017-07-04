@@ -107,7 +107,10 @@ public class WebcamController implements Controller {
         @Override
         protected void process(List<String> chunks) {
             VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
+            String status = "";
             int fromRow = spreadsheet.getFromRow();
+            int foundValueAt, rowToInsert;
+
             try {
                 participantList = spreadsheet.readCol("Key");
 
@@ -117,10 +120,17 @@ public class WebcamController implements Controller {
 
             for (String result : chunks) {
                 System.out.println(result);
-                txtWebcamMessage.setText(result);
+
                 if (participantList.contains(result)) {
                     System.out.println("It is in the list");
                     System.out.println(participantList.indexOf(result));
+
+                    foundValueAt = participantList.indexOf(result);
+                    rowToInsert = foundValueAt + fromRow;
+
+                    spreadsheet.writeValue("Output", rowToInsert, "Checked in");
+
+                    txtWebcamMessage.setText("This person is in the list. Status: ");
                 } else {
                     System.out.println("It is not in the list");
                 }
