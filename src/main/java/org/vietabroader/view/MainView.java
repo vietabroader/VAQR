@@ -410,6 +410,7 @@ public class MainView extends JFrame implements Observer {
         AuthenticationController authController = new AuthenticationController();
         authController.setButtonAuthenticate(btnAuthenticate)
                 .setProgressIndicator(prgIndicator)
+                .setLabelAuthenticate(lblAuthMessage)
                 .control();
 
         SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
@@ -467,7 +468,7 @@ public class MainView extends JFrame implements Observer {
                 sheets.forEach(cbbSheet::addItem);
 
                 setEnabledChildren(true);
-//                panWebcam.setEnabled(false);
+                panWebcam.setEnabled(false);
                 break;
             case REFRESHED:
                 setEnabledChildren(true);

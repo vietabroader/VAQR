@@ -13,6 +13,7 @@ public class AuthenticationController implements Controller {
 
     private JButton btnAuthenticate;
     private JProgressBar prgIndicator;
+    private JLabel lblAuthenticate;
 
     public AuthenticationController setButtonAuthenticate(JButton btn) {
         btnAuthenticate = btn;
@@ -24,12 +25,18 @@ public class AuthenticationController implements Controller {
         return this;
     }
 
+    public AuthenticationController setLabelAuthenticate(JLabel lbl) {
+        lblAuthenticate = lbl;
+        return this;
+    }
+
     @Override
     public void control() {
         btnAuthenticate.addActionListener(e -> {
             GlobalState currentState = GlobalState.getInstance();
             if (currentState.getStatus() == GlobalState.Status.SIGNED_OUT) {
                 prgIndicator.setIndeterminate(true);
+                lblAuthenticate.setText("Signing you in...");
                 (new SignInWorker()).execute();
             }
             else {
