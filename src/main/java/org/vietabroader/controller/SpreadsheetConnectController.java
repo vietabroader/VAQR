@@ -61,6 +61,7 @@ public class SpreadsheetConnectController implements Controller {
 
     private class SpreadsheetConnectWorker extends SwingWorker<VASpreadsheet, Object> {
         private String spreadsheetId;
+        private String errorMessage = "";
 
         SpreadsheetConnectWorker(String spreadsheetId) {
             this.spreadsheetId = spreadsheetId;
@@ -68,32 +69,32 @@ public class SpreadsheetConnectController implements Controller {
 
         @Override
         protected VASpreadsheet doInBackground() throws Exception {
-            VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
-            spreadsheet.connect();
-            return spreadsheet;
+            try {
+                VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
+                spreadsheet.connect();
+                return spreadsheet;
+            } catch (GoogleJsonResponseException ex) {
+                errorMessage = ex.getDetails().getMessage();
+                logger.error("Error while loading spreadsheet", ex);
+            }
+            return null;
         }
 
         @Override
         protected void done() {
             GlobalState currentState = GlobalState.getInstance();
-            String errorMessage = "";
-            try {
-                VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
-                spreadsheet.connect();
+            if (errorMessage.isEmpty()) {
+                try {
+                    VASpreadsheet spreadsheet = get();
+                    currentState.setSpreadsheet(spreadsheet);
+                    currentState.setStatus(GlobalState.Status.CONNECTED);
 
-                currentState.setSpreadsheet(spreadsheet);
-                currentState.setStatus(GlobalState.Status.CONNECTED);
-
-                String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
-                logger.debug("Connected to sheet: " + spreadsheetTitle);
-            }
-            catch (GoogleJsonResponseException ex) {
-                errorMessage = ex.getDetails().getMessage();
-                logger.error("Error while loading spreadsheet", ex);
-            }
-            catch (Exception ex) {
-                errorMessage = "Cannot connect to the spreadsheet.";
-                logger.error("Error while loading spreadsheet", ex);
+                    String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
+                    logger.debug("Connected to sheet: " + spreadsheetTitle);
+                } catch (Exception ex) {
+                    errorMessage = "Cannot connect to the spreadsheet.";
+                    logger.error("Error while loading spreadsheet", ex);
+                }
             }
             if (!errorMessage.isEmpty()) {
                 currentState.setStatus(GlobalState.Status.SIGNED_IN);
