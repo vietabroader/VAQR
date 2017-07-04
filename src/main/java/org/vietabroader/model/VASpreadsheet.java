@@ -18,6 +18,12 @@ import java.util.List;
  */
 public class VASpreadsheet {
 
+    public static final String OUTPUT_COL_NAME = "Output";
+    public static final String KEY_COL_NAME = "Key";
+    public static final String QR_COL_NAME = "QR";
+    public static final String SECRET_COL_NAME = "Secret";
+    public static final String CHECKED_MARK = "x";
+
     // Spreadsheet data
     private String spreadsheetId;
     private Spreadsheet spreadSheet;

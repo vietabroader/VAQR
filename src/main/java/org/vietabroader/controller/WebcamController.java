@@ -108,31 +108,33 @@ public class WebcamController implements Controller {
         protected void process(List<String> chunks) {
             try {
                 VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
-                List<Object> participantList = spreadsheet.readCol("Key");
+                List<Object> participantList = spreadsheet.readCol(VASpreadsheet.KEY_COL_NAME);
                 for (String result : chunks) {
                     String cleanedResult = result.trim();
                     if (participantList.contains(cleanedResult)) {
                         int foundValueAt = participantList.indexOf(cleanedResult);
 
-                        if (spreadsheet.readValue("Output", foundValueAt).equals("Checked in")) {
-                            txtWebcamMessage.setText("This person, " + result + ", has already checked in");
-                            txtWebcamMessage.setBackground(Color.YELLOW);
-                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
-                        } else {
-                            spreadsheet.writeValue("Output", foundValueAt, "Checked in");
+                        if (spreadsheet.readValue(VASpreadsheet.OUTPUT_COL_NAME,
+                                                  foundValueAt).toString().isEmpty()) {
+                            spreadsheet.writeValue(VASpreadsheet.OUTPUT_COL_NAME,
+                                    foundValueAt,
+                                    VASpreadsheet.CHECKED_MARK);
 
                             txtWebcamMessage.setText("Checking " + result + " in... OK");
                             txtWebcamMessage.setBackground(Color.GREEN);
-                            txtWebcamMessage.setDisabledTextColor(Color.WHITE);
-                            new Thread() {
-                                public void run() {
-                                    try {
-                                        spreadsheet.uploadOneColumn("Output");
-                                    } catch (Exception e) {
-                                        logger.error("Error while uploading column Output", e);
-                                    }
+                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
+                            new Thread(() -> {
+                                try {
+                                    spreadsheet.uploadOneColumn(VASpreadsheet.OUTPUT_COL_NAME);
+                                } catch (Exception e) {
+                                    logger.error("Error while uploading column Output", e);
                                 }
-                            }.start();
+                            }).start();
+
+                        } else {
+                            txtWebcamMessage.setText("This person (" + result + ") has already checked in");
+                            txtWebcamMessage.setBackground(Color.YELLOW);
+                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
                         }
 
                     } else {

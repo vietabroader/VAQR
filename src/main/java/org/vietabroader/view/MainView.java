@@ -300,31 +300,33 @@ public class MainView extends JFrame implements Observer {
                 }
             }
         };
-        TitledPanel panel = new TitledPanel("Key Columns");
+        TitledPanel panel = new TitledPanel("Columns");
         GridBagConstraints c = new GridBagConstraints();
 
         c.weightx = 1 / 4;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
-        OneColumn colKey = new OneColumn("Key");
+        OneColumn colKey = new OneColumn(VASpreadsheet.KEY_COL_NAME);
         panel.add(colKey, c);
         columnArray[0] = colKey;
 
         c.gridx = 1;
-        OneColumn colSecret = new OneColumn("Secret");
+        OneColumn colSecret = new OneColumn(VASpreadsheet.SECRET_COL_NAME);
         // TODO: enable or remove secret column in next version
         colSecret.setEnabled(false);
         panel.add(colSecret, c);
         columnArray[1] = colSecret;
 
         c.gridx = 2;
-        OneColumn colQR = new OneColumn("QR");
+        OneColumn colQR = new OneColumn(VASpreadsheet.QR_COL_NAME);
+        // TODO: enable or remove secret column in next version
+        colSecret.setEnabled(false);
         panel.add(colQR, c);
         columnArray[2] = colQR;
 
         c.gridx = 3;
-        OneColumn colOutput = new OneColumn("Output");
+        OneColumn colOutput = new OneColumn(VASpreadsheet.OUTPUT_COL_NAME);
         panel.add(colOutput, c);
         columnArray[3] = colOutput;
 
@@ -481,10 +483,11 @@ public class MainView extends JFrame implements Observer {
         panSignIn.setEnabled(b);
         panSpreadsheet.setEnabled(b);
         panWorkspace.setEnabled(b);
-//        panWebcam.setEnabled(b);
+        panWebcam.setEnabled(b);
 
         // TODO: enable or remove secret column in next version
         columnArray[1].setEnabled(false);
+        columnArray[2].setEnabled(false);
     }
 
 }
