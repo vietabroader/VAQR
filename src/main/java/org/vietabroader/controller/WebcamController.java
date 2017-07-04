@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
-import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
@@ -21,14 +22,11 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
-import sun.jvm.hotspot.runtime.Threads;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final int READER_SLEEP_TIME_MS = 1000;
-
-    private List<Object> participantList;
 
     private Webcam webcam;
     private WebcamPanel webcamPanel;
@@ -108,29 +106,31 @@ public class WebcamController implements Controller {
         @Override
         protected void process(List<String> chunks) {
             VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
-            int foundValueAt;
+            List<Object> participantList = new ArrayList<Object>();
 
             try {
                 participantList = spreadsheet.readCol("Key");
-
             } catch (Exception e) {
 
             }
 
             for (String result : chunks) {
-                System.out.println(result);
 
                 if (participantList.contains(result)) {
+                    int foundValueAt;
                     foundValueAt = participantList.indexOf(result);
 
                     try {
                         if (spreadsheet.readValue("Output", foundValueAt).equals("Checked in")) {
-                            txtWebcamMessage.setText("This person has already checked in");
-                            continue;
+                            txtWebcamMessage.setText("This person, " + result + " has already checked in");
+                            txtWebcamMessage.setBackground(Color.YELLOW);
+                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
                         } else {
                             spreadsheet.writeValue("Output", foundValueAt, "Checked in");
 
-                            txtWebcamMessage.setText("Checking this person in... OK");
+                            txtWebcamMessage.setText("Checking " + result + " in... OK");
+                            txtWebcamMessage.setBackground(Color.GREEN);
+                            txtWebcamMessage.setDisabledTextColor(Color.WHITE);
                             new Thread() {
                                 public void run() {
                                     try {
@@ -146,7 +146,9 @@ public class WebcamController implements Controller {
                     }
 
                 } else {
-                    txtWebcamMessage.setText("This person has not been registered yet");
+                    txtWebcamMessage.setText(result + " is invalid");
+                    txtWebcamMessage.setBackground(Color.RED);
+                    txtWebcamMessage.setDisabledTextColor(Color.WHITE);
                 }
             }
         }
