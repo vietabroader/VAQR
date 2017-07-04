@@ -282,6 +282,7 @@ public class MainView extends JFrame implements Observer {
         c.gridy = 2;
         c.gridwidth = 4;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 0, 0, 0);
         JPanel panCol = createColumnPanel();
         panel.add(panCol, c);
 
@@ -299,10 +300,11 @@ public class MainView extends JFrame implements Observer {
                 }
             }
         };
+        panelMain.setLayout(new GridBagLayout());
         TitledPanel panel = new TitledPanel("Columns");
         GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 1 / 4;
+        c.weightx = 1 / 4.0;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridx = 0;
@@ -313,14 +315,14 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 1;
         OneColumn colSecret = new OneColumn(VASpreadsheet.SECRET_COL_NAME);
         // TODO: enable or remove secret column in next version
-        colSecret.setEnabled(false);
+        colSecret.setVisible(false);
         panel.add(colSecret, c);
         columnArray[1] = colSecret;
 
         c.gridx = 2;
         OneColumn colQR = new OneColumn(VASpreadsheet.QR_COL_NAME);
-        // TODO: enable or remove secret column in next version
-        colSecret.setEnabled(false);
+        // TODO: enable or remove QR column in next version
+        colQR.setVisible(false);
         panel.add(colQR, c);
         columnArray[2] = colQR;
 
@@ -330,17 +332,16 @@ public class MainView extends JFrame implements Observer {
         columnArray[3] = colOutput;
 
         c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = 1 / 2.0;
         panelMain.add(panel, c);
 
         c.gridx = 1;
-        c.anchor = GridBagConstraints.CENTER;
         btnRefresh.setPreferredSize(BUTTON_DIM_REFRESH);
         panelMain.add(btnRefresh, c);
 
         return panelMain;
     }
-
-
 
     private JPanel createGeneratePanel() {
         TitledPanel panel = new TitledPanel("Generate QR Code");
@@ -486,10 +487,6 @@ public class MainView extends JFrame implements Observer {
         panSpreadsheet.setEnabled(b);
         panWorkspace.setEnabled(b);
         panWebcam.setEnabled(b);
-
-        // TODO: enable or remove secret column in next version
-        columnArray[1].setEnabled(false);
-        columnArray[2].setEnabled(false);
     }
 
     public enum MessageType {
