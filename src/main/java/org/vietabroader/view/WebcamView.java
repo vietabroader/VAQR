@@ -14,7 +14,7 @@ class WebcamView extends JFrame {
 
     private final Webcam webcam = Webcam.getDefault();
     private WebcamPanel webcamPanel;
-    private final JTextField txtWebcamMessage = new JTextField("Webcam message");
+    private final JTextField txtWebcamMessage = new JTextField("");
 
     WebcamView() {
         initUI();
