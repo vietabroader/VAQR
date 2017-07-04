@@ -151,7 +151,7 @@ public class VASpreadsheetTest {
             IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
         testSpreadsheet.setRow(2, 4);
         int numRow = testSpreadsheet.getNumRow();
-        Assert.assertEquals(numRow,3);
+        Assert.assertEquals(3, numRow);
     }
 
     // https://docs.google.com/spreadsheets/d/1VanAqWzI8Z4g4lYW5gJEUR4KgQyIix89wSkPB63EAJI/
@@ -182,12 +182,27 @@ public class VASpreadsheetTest {
     @Test
     public void testReadEmptyColumn() throws
             IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
-        String ITEM = "None";
+        String COL = "None";
         testSpreadsheet.setSheetName("Language")
-                .setColumnChar(ITEM, "A")
+                .setColumnChar(COL, "A")
                 .setRow(2, 4)
-                .refreshOneColumn(ITEM);
-        Assert.assertEquals(testSpreadsheet.readCol(ITEM).size(), 0);
+                .refreshOneColumn(COL);
+        List<Object> col = testSpreadsheet.readCol(COL);
+        Assert.assertEquals(3, col.size());
+        assertList(col, "", "", "");
+    }
+
+    @Test
+    public void testReadPartiallyFilledColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String COL = "Functional";
+        testSpreadsheet.setSheetName("Language")
+                .setColumnChar(COL, "D")
+                .setRow(3, 7)
+                .refreshOneColumn(COL);
+        List<Object> col = testSpreadsheet.readCol(COL);
+        Assert.assertNotEquals("Yes", col.get(0));
+        Assert.assertEquals(testSpreadsheet.getNumRow(), col.size());
     }
 
     private void assertList(List<Object> actual, Object... expected) {
