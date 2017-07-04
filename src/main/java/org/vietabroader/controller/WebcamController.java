@@ -131,7 +131,15 @@ public class WebcamController implements Controller {
                             spreadsheet.writeValue("Output", foundValueAt, "Checked in");
 
                             txtWebcamMessage.setText("Checking this person in... OK");
-                            spreadsheet.uploadOneColumn("Output");
+                            new Thread() {
+                                public void run() {
+                                    try {
+                                        spreadsheet.uploadOneColumn("Output");
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }.start();
                         }
                     } catch (Exception e) {
 
