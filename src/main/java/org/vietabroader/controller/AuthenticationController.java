@@ -12,9 +12,15 @@ public class AuthenticationController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private JButton btnAuthenticate;
+    private JProgressBar prgIndicator;
 
     public AuthenticationController setButtonAuthenticate(JButton btn) {
         btnAuthenticate = btn;
+        return this;
+    }
+
+    public AuthenticationController setProgressIndicator(JProgressBar prg) {
+        prgIndicator = prg;
         return this;
     }
 
@@ -23,6 +29,7 @@ public class AuthenticationController implements Controller {
         btnAuthenticate.addActionListener(e -> {
             GlobalState currentState = GlobalState.getInstance();
             if (currentState.getStatus() == GlobalState.Status.SIGNED_OUT) {
+                prgIndicator.setIndeterminate(true);
                 (new SignInWorker()).execute();
             }
             else {
@@ -52,6 +59,7 @@ public class AuthenticationController implements Controller {
                 currentState.setStatus(GlobalState.Status.SIGNED_OUT);
                 logger.error("Cannot sign in", ex);
             }
+            prgIndicator.setIndeterminate(false);
         }
     }
 }

@@ -406,7 +406,9 @@ public class MainView extends JFrame implements Observer {
      */
     private void initControllers() {
         AuthenticationController authController = new AuthenticationController();
-        authController.setButtonAuthenticate(btnAuthenticate).control();
+        authController.setButtonAuthenticate(btnAuthenticate)
+                .setProgressIndicator(prgIndicator)
+                .control();
 
         SpreadsheetConnectController spreadSheetConnectController = new SpreadsheetConnectController();
         spreadSheetConnectController.setButtonConnect(btnConnect)
