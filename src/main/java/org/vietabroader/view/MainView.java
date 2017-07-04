@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -120,12 +121,10 @@ public class MainView extends JFrame implements Observer {
     }
 
     private void resetOnSignedOut() {
-        lblSpreadsheetMessage.setBackground(Color.LIGHT_GRAY);
-        lblSpreadsheetMessage.setForeground(Color.BLACK);
+        setMessageColor(lblSpreadsheetMessage, MessageType.INACTIVE);
         lblSpreadsheetMessage.setText(" ");
 
-        lblSheetMessage.setBackground(Color.LIGHT_GRAY);
-        lblSheetMessage.setForeground(Color.BLACK);
+        setMessageColor(lblSheetMessage, MessageType.INACTIVE);
         lblSheetMessage.setText(" ");
 
         btnAuthenticate.setText(BUTTON_TEXT_SIGN_IN);
@@ -460,12 +459,14 @@ public class MainView extends JFrame implements Observer {
             case CONNECTED:
                 VASpreadsheet currentSpreadsheet = currentState.getSpreadsheet();
                 String spreadsheetTitle = currentSpreadsheet.getSpreadsheetTitle();
-                lblSpreadsheetMessage.setBackground(Color.GREEN);
-                lblSpreadsheetMessage.setForeground(Color.BLACK);
+                setMessageColor(lblSpreadsheetMessage, MessageType.SUCCESS);
                 lblSpreadsheetMessage.setText("Connected to: " + spreadsheetTitle);
                 List<String> sheets = currentSpreadsheet.getSheetTitles();
                 cbbSheet.removeAllItems();
                 sheets.forEach(cbbSheet::addItem);
+
+                setMessageColor(lblSheetMessage, MessageType.INACTIVE);
+                lblSheetMessage.setText(" ");
 
                 setEnabledChildren(true);
                 panWebcam.setEnabled(false);
@@ -489,6 +490,47 @@ public class MainView extends JFrame implements Observer {
         // TODO: enable or remove secret column in next version
         columnArray[1].setEnabled(false);
         columnArray[2].setEnabled(false);
+    }
+
+    public enum MessageType {
+        INACTIVE,
+        SUCCESS,
+        WARNING,
+        ERROR
+    }
+
+    /**
+     * Set the background and foreground color of a component depending on
+     * selected {@link MessageType}:
+     * @param comp a Swing component
+     * @param type type of message
+     */
+    public static void setMessageColor(JComponent comp, MessageType type) {
+        Color background = Color.LIGHT_GRAY;
+        Color foreground = Color.BLACK;
+        switch (type) {
+            case INACTIVE:
+                background = Color.LIGHT_GRAY;
+                foreground = Color.BLACK;
+                break;
+            case SUCCESS:
+                background = Color.GREEN;
+                foreground = Color.BLACK;
+                break;
+            case WARNING:
+                background = Color.YELLOW;
+                foreground = Color.BLACK;
+                break;
+            case ERROR:
+                background = Color.RED;
+                foreground = Color.WHITE;
+                break;
+        }
+        comp.setBackground(background);
+        comp.setForeground(foreground);
+        if (comp instanceof JTextComponent) {
+            ((JTextComponent) comp).setDisabledTextColor(foreground);
+        }
     }
 
 }

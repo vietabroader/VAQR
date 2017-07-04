@@ -9,9 +9,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
@@ -23,6 +21,10 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
+import org.vietabroader.view.MainView;
+
+import static org.vietabroader.view.MainView.setMessageColor;
+import static org.vietabroader.view.MainView.MessageType;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -120,9 +122,8 @@ public class WebcamController implements Controller {
                                     foundValueAt,
                                     VASpreadsheet.CHECKED_MARK);
 
+                            setMessageColor(txtWebcamMessage, MessageType.SUCCESS);
                             txtWebcamMessage.setText("Checking " + result + " in... OK");
-                            txtWebcamMessage.setBackground(Color.GREEN);
-                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
                             new Thread(() -> {
                                 try {
                                     spreadsheet.uploadOneColumn(VASpreadsheet.OUTPUT_COL_NAME);
@@ -132,15 +133,13 @@ public class WebcamController implements Controller {
                             }).start();
 
                         } else {
+                            setMessageColor(txtWebcamMessage, MessageType.WARNING);
                             txtWebcamMessage.setText("This person (" + result + ") has already checked in");
-                            txtWebcamMessage.setBackground(Color.YELLOW);
-                            txtWebcamMessage.setDisabledTextColor(Color.BLACK);
                         }
 
                     } else {
+                        setMessageColor(txtWebcamMessage, MessageType.ERROR);
                         txtWebcamMessage.setText("Cannot find " + result);
-                        txtWebcamMessage.setBackground(Color.RED);
-                        txtWebcamMessage.setDisabledTextColor(Color.WHITE);
                     }
                 }
             } catch (Exception e) {
