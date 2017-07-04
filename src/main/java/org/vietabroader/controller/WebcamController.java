@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
@@ -21,15 +20,15 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
-import org.vietabroader.view.MainView;
 
 import static org.vietabroader.view.MainView.setMessageColor;
 import static org.vietabroader.view.MainView.MessageType;
 
 public class WebcamController implements Controller {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private final int READER_SLEEP_TIME_MS = 600;
+    private static final Logger logger = LoggerFactory.getLogger(WebcamController.class);
+
+    private final int READER_SLEEP_TIME_MS = 500;
 
     private Webcam webcam;
     private WebcamPanel webcamPanel;
@@ -94,7 +93,7 @@ public class WebcamController implements Controller {
                     try {
                         result = new MultiFormatReader().decode(bitmap);
                     } catch (NotFoundException e) {
-                        // fall thru, it means there is no QR code in image
+                        // fall through, it means there is no QR code in image
                     }
                 }
 
