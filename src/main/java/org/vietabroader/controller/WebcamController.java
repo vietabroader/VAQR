@@ -128,10 +128,6 @@ public class WebcamController implements Controller {
                             txtWebcamMessage.setText("This person has already checked in");
                             continue;
                         } else {
-
-                            System.out.println("It is in the list");
-                            System.out.println(participantList.indexOf(result));
-
                             spreadsheet.writeValue("Output", foundValueAt, "Checked in");
 
                             txtWebcamMessage.setText("Checking this person in... OK");
@@ -141,34 +137,10 @@ public class WebcamController implements Controller {
 
                     }
 
-
-
                 } else {
-                    System.out.println("It is not in the list");
                     txtWebcamMessage.setText("This person has not been registered yet");
                 }
-//                for (Object participant: participantList) {
-//                    if (result.equals(participant)) {
-//                        // do something
-//                        System.out.println("It is in the list");
-//                        System.out.println(participantList.indexOf(participant));
-//                    } else {
-//                        System.out.println("It is not in the list");
-//                    }
-//                    // notify if marked
-//                    // not existed
-//                    // not marked
-//
-//
-//                    // upload column
-//                    // excute thread
-////                    // Thread
-////                    System.out.println(participant);
-////                    System.out.println(spreadsheet.getFromRow());
-//                }
             }
-
-
         }
     }
 }
