@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
@@ -26,7 +27,7 @@ import org.vietabroader.model.VASpreadsheet;
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private final int READER_SLEEP_TIME_MS = 1000;
+    private final int READER_SLEEP_TIME_MS = 600;
 
     private Webcam webcam;
     private WebcamPanel webcamPanel;
@@ -95,7 +96,7 @@ public class WebcamController implements Controller {
                     }
                 }
 
-                if (result != null) {
+                if (result != null && !result.getText().isEmpty()) {
                     publish(result.getText());
                 }
             } while (!isCancelled());
@@ -105,24 +106,16 @@ public class WebcamController implements Controller {
 
         @Override
         protected void process(List<String> chunks) {
-            VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
-            List<Object> participantList = new ArrayList<Object>();
-
             try {
-                participantList = spreadsheet.readCol("Key");
-            } catch (Exception e) {
+                VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
+                List<Object> participantList = spreadsheet.readCol("Key");
+                for (String result : chunks) {
+                    String cleanedResult = result.trim();
+                    if (participantList.contains(cleanedResult)) {
+                        int foundValueAt = participantList.indexOf(cleanedResult);
 
-            }
-
-            for (String result : chunks) {
-
-                if (participantList.contains(result)) {
-                    int foundValueAt;
-                    foundValueAt = participantList.indexOf(result);
-
-                    try {
                         if (spreadsheet.readValue("Output", foundValueAt).equals("Checked in")) {
-                            txtWebcamMessage.setText("This person, " + result + " has already checked in");
+                            txtWebcamMessage.setText("This person, " + result + ", has already checked in");
                             txtWebcamMessage.setBackground(Color.YELLOW);
                             txtWebcamMessage.setDisabledTextColor(Color.BLACK);
                         } else {
@@ -136,20 +129,20 @@ public class WebcamController implements Controller {
                                     try {
                                         spreadsheet.uploadOneColumn("Output");
                                     } catch (Exception e) {
-
+                                        logger.error("Error while uploading column Output", e);
                                     }
                                 }
                             }.start();
                         }
-                    } catch (Exception e) {
 
+                    } else {
+                        txtWebcamMessage.setText("Cannot find " + result);
+                        txtWebcamMessage.setBackground(Color.RED);
+                        txtWebcamMessage.setDisabledTextColor(Color.WHITE);
                     }
-
-                } else {
-                    txtWebcamMessage.setText(result + " is invalid");
-                    txtWebcamMessage.setBackground(Color.RED);
-                    txtWebcamMessage.setDisabledTextColor(Color.WHITE);
                 }
+            } catch (Exception e) {
+                logger.error("Error while processing QR code", e);
             }
         }
     }
