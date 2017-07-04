@@ -21,6 +21,7 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import org.vietabroader.model.GlobalState;
 import org.vietabroader.model.VASpreadsheet;
+import sun.jvm.hotspot.runtime.Threads;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -122,17 +123,32 @@ public class WebcamController implements Controller {
                 System.out.println(result);
 
                 if (participantList.contains(result)) {
-                    System.out.println("It is in the list");
-                    System.out.println(participantList.indexOf(result));
-
                     foundValueAt = participantList.indexOf(result);
-                    rowToInsert = foundValueAt + fromRow;
+                    try {
+                        if (spreadsheet.readValue("Output", foundValueAt).equals("Checked in")) {
+                            txtWebcamMessage.setText("This person has already checked in");
+                            continue;
+                        } else {
 
-                    spreadsheet.writeValue("Output", rowToInsert, "Checked in");
+                            System.out.println("It is in the list");
+                            System.out.println(participantList.indexOf(result));
 
-                    txtWebcamMessage.setText("This person is in the list. Status: ");
+
+                            rowToInsert = foundValueAt + fromRow;
+
+                            spreadsheet.writeValue("Output", rowToInsert, "Checked in");
+
+                            txtWebcamMessage.setText("Checking this person in... Status: ");
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+
+
                 } else {
                     System.out.println("It is not in the list");
+                    txtWebcamMessage.setText("This person has not been registered yet");
                 }
 //                for (Object participant: participantList) {
 //                    if (result.equals(participant)) {
