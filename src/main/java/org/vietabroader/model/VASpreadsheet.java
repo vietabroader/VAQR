@@ -206,10 +206,6 @@ public class VASpreadsheet {
                 .execute();
     }
 
-    public int getFromRow() {
-        return this.fromRow;
-    }
-
     public static class VASpreadsheetException extends Exception {
         VASpreadsheetException(String msg) {
             super(msg);
