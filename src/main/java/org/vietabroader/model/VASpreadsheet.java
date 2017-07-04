@@ -117,7 +117,12 @@ public class VASpreadsheet {
                     .execute();
 
             List<List<Object>> values = response.getValues();
-            cachedColumns.put(colName, values.get(0));
+            if (values == null || values.isEmpty()) {
+                cachedColumns.put(colName, new ArrayList<>());
+            }
+            else {
+                cachedColumns.put(colName, values.get(0));
+            }
         } catch (GoogleJsonResponseException e) {
             throw new VASpreadsheetException("Spreadsheet responds with error: " + e.getDetails().getMessage());
         }

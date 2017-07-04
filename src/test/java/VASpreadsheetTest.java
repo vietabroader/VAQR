@@ -179,6 +179,17 @@ public class VASpreadsheetTest {
         assertList(itemList, "Book", "Chair", "Laptop");
     }
 
+    @Test
+    public void testReadEmptyColumn() throws
+            IOException, GeneralSecurityException, VASpreadsheet.VASpreadsheetException {
+        String ITEM = "None";
+        testSpreadsheet.setSheetName("Language")
+                .setColumnChar(ITEM, "A")
+                .setRow(2, 4)
+                .refreshOneColumn(ITEM);
+        Assert.assertEquals(testSpreadsheet.readCol(ITEM).size(), 0);
+    }
+
     private void assertList(List<Object> actual, Object... expected) {
         List<Object> expectedList = Arrays.asList(expected);
         Assert.assertEquals(expectedList.size(), actual.size());
