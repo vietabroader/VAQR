@@ -202,7 +202,7 @@ public class VASpreadsheet {
         values.add(contentList);
 
         String col = columnNameToChar.get(colName);
-        String range = col + fromRow + ":" + col + toRow;
+        String range = sheetName + "!" + col + fromRow + ":" + col + toRow;
         ValueRange body = new ValueRange()
                 .setMajorDimension("COLUMNS")
                 .setValues(values);
