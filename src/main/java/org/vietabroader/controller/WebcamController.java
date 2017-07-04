@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 
 import com.google.zxing.BinaryBitmap;
@@ -19,11 +20,14 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import org.vietabroader.model.GlobalState;
+import org.vietabroader.model.VASpreadsheet;
 
 public class WebcamController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final int READER_SLEEP_TIME_MS = 1000;
+
+    private List<Object> participantList;
 
     private Webcam webcam;
     private WebcamPanel webcamPanel;
@@ -102,10 +106,46 @@ public class WebcamController implements Controller {
 
         @Override
         protected void process(List<String> chunks) {
+            VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
+            int fromRow = spreadsheet.getFromRow();
+            try {
+                participantList = spreadsheet.readCol("Key");
+
+            } catch (Exception e) {
+
+            }
+
             for (String result : chunks) {
                 System.out.println(result);
                 txtWebcamMessage.setText(result);
+                if (participantList.contains(result)) {
+                    System.out.println("It is in the list");
+                    System.out.println(participantList.indexOf(result));
+                } else {
+                    System.out.println("It is not in the list");
+                }
+//                for (Object participant: participantList) {
+//                    if (result.equals(participant)) {
+//                        // do something
+//                        System.out.println("It is in the list");
+//                        System.out.println(participantList.indexOf(participant));
+//                    } else {
+//                        System.out.println("It is not in the list");
+//                    }
+//                    // notify if marked
+//                    // not existed
+//                    // not marked
+//
+//
+//                    // upload column
+//                    // excute thread
+////                    // Thread
+////                    System.out.println(participant);
+////                    System.out.println(spreadsheet.getFromRow());
+//                }
             }
+
+
         }
     }
 }
