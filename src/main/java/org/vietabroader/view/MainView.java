@@ -192,6 +192,8 @@ public class MainView extends JFrame implements Observer {
         });
 
         this.setTitle("VAQR");
+        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/vaqr-icon.png"));
+        this.setIconImage(image);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.pack();
