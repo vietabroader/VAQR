@@ -41,5 +41,10 @@ dependencies {
 jfx {
     mainClass = 'org.vietabroader.Main'
     vendor = 'VietAbroader'
-    jfxMainAppJarName = "VAQR.jar"
+    jfxMainAppJarName = 'VAQR.jar'
+    needShortcut = true
+    nativeReleaseVersion = '1.0'
+    bundleArguments = [
+            installdirChooser: 'true'
+    ]
 }
