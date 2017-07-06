@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.ProgressBarUI;
 import javax.swing.text.JTextComponent;
 
 import java.awt.*;
@@ -207,6 +208,7 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 10, 0, 0);;
         panel.add(btnAuthenticate, c);
 
         lblAuthMessage.setPreferredSize(LABEL_DIM_EMAIL);
@@ -225,6 +227,7 @@ public class MainView extends JFrame implements Observer {
         panel.add(new JLabel("Spreadsheet ID: "), c);
 
         c.gridx = 1;
+        c.insets = new Insets(0, 10, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(txtSpreadsheetID, c);
 
@@ -249,6 +252,7 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 1;
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0, 10, 10, 10);
         panel.add(cbbSheet, c);
 
         // Row range specification
@@ -306,6 +310,7 @@ public class MainView extends JFrame implements Observer {
 
         c.weightx = 1 / 4.0;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0, 5, 0, 5);
 
         c.gridx = 0;
         OneColumn colKey = new OneColumn(VASpreadsheet.KEY_COL_NAME);
