@@ -3,9 +3,9 @@ package org.vietabroader.model;
 import java.util.Observable;
 
 /**
- * This class contains the global state and data of the app such as whether the user has
+ * This class contains the global state and data of the app; a state can be whether the user has
  * signed in, connected to a spreadsheet and so on; data includes but may not limited to
- * user email address and connected spreadsheet. As this class is implemented as an Observable,
+ * user email address and connected spreadsheet. This class is implemented as an Observable so that
  * an Observer may also observe the change in this class.
  */
 public class GlobalState extends Observable {
@@ -14,7 +14,7 @@ public class GlobalState extends Observable {
     private static GlobalState singleton = new GlobalState();
 
     /**
-     * Make constructor private to prevent others from initiating
+     * Make constructor private to prevent others from initiating.
      * Also set initial values here
      */
     private GlobalState() {
