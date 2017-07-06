@@ -233,7 +233,7 @@ public class MainView extends JFrame implements Observer {
 
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 2;
-        panel.add(btnConnect);
+        panel.add(btnConnect, c);
 
         return panel;
     }
