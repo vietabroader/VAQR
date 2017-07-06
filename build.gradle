@@ -48,6 +48,7 @@ jfx {
     nativeReleaseVersion = '1.0'
     verbose = true
     bundleArguments = [
-            installdirChooser: 'true'
+            installdirChooser: 'true',
+            runtime: null
     ]
 }
