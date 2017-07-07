@@ -59,7 +59,8 @@ public class SheetRefreshController implements Controller {
 
             GlobalState currentState = GlobalState.getInstance();
 
-            if (currentState.getStatus() == GlobalState.Status.CONNECTED || currentState.getStatus() == GlobalState.Status.REFRESHED) {
+            if (currentState.getStatus() == GlobalState.Status.CONNECTED ||
+                    currentState.getStatus() == GlobalState.Status.REFRESHED) {
 
                 VASpreadsheet spreadsheet = currentState.getSpreadsheet();
 
@@ -85,21 +86,19 @@ public class SheetRefreshController implements Controller {
         });
     }
 
-    private class RefreshWorker extends SwingWorker<VASpreadsheet, Object> {
+    private class RefreshWorker extends SwingWorker<Void, Object> {
 
         @Override
-        protected VASpreadsheet doInBackground() throws Exception {
+        protected Void doInBackground() throws Exception {
             VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
             spreadsheet.refreshAllColumns();
-            return spreadsheet;
+            return null;
         }
 
         @Override
         protected void done() {
             try {
-                VASpreadsheet spreadsheet = GlobalState.getInstance().getSpreadsheet();
-                spreadsheet.refreshAllColumns();
-
+                get();
                 GlobalState currentState = GlobalState.getInstance();
                 currentState.setStatus(GlobalState.Status.REFRESHED);
 
@@ -115,7 +114,7 @@ public class SheetRefreshController implements Controller {
                 lblSheetMessage.setForeground(Color.WHITE);
                 lblSheetMessage.setText("The sheet cannot be refreshed ");
 
-                logger.error("Cannot refresh the sheet" + e);
+                logger.error("Cannot refresh the sheet", e);
             }
             prgIndicator.setIndeterminate(false);
         }
