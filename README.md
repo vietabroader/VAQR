@@ -12,7 +12,7 @@
 #### Install Java
 #### Install VAQR
 ## Getting started
-#### Generate QR Code
+### Generate QR Code
 - Click on **Go to QR Generator** to go to the web application (you can bookmark this link for later use)
 - Sign in your Google Account
 - Copy Folder ID into Folder ID section
@@ -20,7 +20,7 @@
 
 The application will return a list of Drive image links to send to the attendees
     <img src = "https://user-images.githubusercontent.com/18899970/27970654-43c24cba-6315-11e7-91ed-945db7bc16a7.png"/>
-#### Scan QR Code
+### Scan QR Code
 - Sign in your Google Account
 - Copy your Google Sheet ID into Spreadsheet ID
 
