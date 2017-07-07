@@ -1,6 +1,6 @@
 # VAQR
 *QR reader and generator that helps checking in attendees quickly*
-### Table of content
+## Table of content
 - [Installation](#installation)
     - [Install Java](#install-java)
     - [Install VAQR](#install-vaqr)
@@ -9,8 +9,8 @@
     - [Scan QR Code](#scan-qr-code)
    
 ## Installation
-#### Install Java
-#### Install VAQR
+### Install Java
+### Install VAQR
 ## Getting started
 ### Generate QR Code
 - Click on **Go to QR Generator** to go to the web application (you can bookmark this link for later use)
@@ -34,6 +34,4 @@ The application will return a list of Drive image links to send to the attendees
 - Click on Start Webcam to open webcam and scan QR code from attendees
     - After a QR code being scanned, a mark will appear in the Output column next to the email
         <img src = "https://user-images.githubusercontent.com/18899970/27972421-ed952c0c-631b-11e7-9044-c1ce6513c394.png">
-
-## License
 
