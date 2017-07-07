@@ -88,9 +88,9 @@ public class SpreadsheetConnectController implements Controller {
                 Throwable innerEx = ex.getCause();
                 String errorMessage = "";
                 if (innerEx instanceof GoogleJsonResponseException) {
-                    GoogleJsonResponseException gjsonEx = (GoogleJsonResponseException)innerEx;
-                    errorMessage = gjsonEx.getDetails().getMessage();
-                    logger.error("Error while loading spreadsheet", gjsonEx);
+                    GoogleJsonResponseException gJsonEx = (GoogleJsonResponseException)innerEx;
+                    errorMessage = gJsonEx.getDetails().getMessage();
+                    logger.error("Error while loading spreadsheet", gJsonEx);
                 }
                 else {
                     errorMessage = "Cannot connect to this spreadsheet.";
