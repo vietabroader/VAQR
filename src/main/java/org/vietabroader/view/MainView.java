@@ -210,7 +210,7 @@ public class MainView extends JFrame implements Observer {
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 10, 0, 0);;
+        c.insets = new Insets(0, 10, 0, 0);
         panel.add(btnAuthenticate, c);
 
         lblAuthMessage.setPreferredSize(LABEL_DIM_EMAIL);
