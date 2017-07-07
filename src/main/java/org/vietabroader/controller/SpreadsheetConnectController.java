@@ -6,6 +6,7 @@ import org.vietabroader.model.VASpreadsheet;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,6 @@ public class SpreadsheetConnectController implements Controller {
 
     private class SpreadsheetConnectWorker extends SwingWorker<VASpreadsheet, Object> {
         private String spreadsheetId;
-        private String errorMessage = "";
 
         SpreadsheetConnectWorker(String spreadsheetId) {
             this.spreadsheetId = spreadsheetId;
@@ -69,34 +69,34 @@ public class SpreadsheetConnectController implements Controller {
 
         @Override
         protected VASpreadsheet doInBackground() throws Exception {
-            try {
-                VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
-                spreadsheet.connect();
-                return spreadsheet;
-            } catch (GoogleJsonResponseException ex) {
-                errorMessage = ex.getDetails().getMessage();
-                logger.error("Error while loading spreadsheet", ex);
-            }
-            return null;
+            VASpreadsheet spreadsheet = new VASpreadsheet(spreadsheetId);
+            spreadsheet.connect();
+            return spreadsheet;
         }
 
         @Override
         protected void done() {
             GlobalState currentState = GlobalState.getInstance();
-            if (errorMessage.isEmpty()) {
-                try {
-                    VASpreadsheet spreadsheet = get();
-                    currentState.setSpreadsheet(spreadsheet);
-                    currentState.setStatus(GlobalState.Status.CONNECTED);
+            try {
+                VASpreadsheet spreadsheet = get();
+                currentState.setSpreadsheet(spreadsheet);
+                currentState.setStatus(GlobalState.Status.CONNECTED);
 
-                    String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
-                    logger.debug("Connected to sheet: " + spreadsheetTitle);
-                } catch (Exception ex) {
-                    errorMessage = "Cannot connect to the spreadsheet.";
-                    logger.error("Error while loading spreadsheet", ex);
+                String spreadsheetTitle = spreadsheet.getSpreadsheetTitle();
+                logger.debug("Connected to sheet: " + spreadsheetTitle);
+            } catch (Exception ex) {
+                Throwable innerEx = ex.getCause();
+                String errorMessage = "";
+                if (innerEx instanceof GoogleJsonResponseException) {
+                    GoogleJsonResponseException gjsonEx = (GoogleJsonResponseException)innerEx;
+                    errorMessage = gjsonEx.getDetails().getMessage();
+                    logger.error("Error while loading spreadsheet", gjsonEx);
                 }
-            }
-            if (!errorMessage.isEmpty()) {
+                else {
+                    errorMessage = "Cannot connect to this spreadsheet.";
+                    logger.error("Error while loading spreadsheet", ex);
+
+                }
                 currentState.setStatus(GlobalState.Status.SIGNED_IN);
                 lblSpreadsheetMessage.setText(errorMessage);
                 lblSpreadsheetMessage.setBackground(Color.RED);
