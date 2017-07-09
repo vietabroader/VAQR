@@ -1,25 +1,28 @@
 # VAQR
-*QR reader and generator that helps checking in attendees quickly*
+Before an event starts, we use the [VAQR web application](https://vietabroader-qr.appspot.com) to generate QR codes and send them out to attendees. The lists of attendees are kept in a Google sheet.
+ 
+On the day of the event, we use this application to connect to that sheet and check attendees in as they give us their QR code.
 ## Table of content
 - [Installation](#installation)
-    - [Install Java](#install-java)
-    - [Install VAQR](#install-vaqr)
-- [Getting started](#getting-started)
+- [Instruction](#instruction)
     - [Generate QR Code](#generate-qr-code)
     - [Scan QR Code](#scan-qr-code)
    
 ## Installation
-### Install Java
-### Install VAQR
-## Getting started
-### Generate QR Code
-- Click on **Go to QR Generator** to go to the web application (you can bookmark this link for later use)
-- Sign in your Google Account
-- Copy Folder ID into Folder ID section
-- Copy the email column into Email List section
+1. Install [Java Runtime Environment](https://java.com/en/download/).
+2. Go to [Releases page](https://github.com/vietabroader/VAQR/releases) to get the latest binary for either macOS or Windows.
 
-The application will return a list of Drive image links to send to the attendees
-    <img src = "https://user-images.githubusercontent.com/18899970/27971357-09bb7dc2-6318-11e7-8999-4f91a6e057a9.png"/>
+## Instruction
+### Generate QR Code
+- Open the app then click on **Go to QR Generator** to go to the web application, or enter [vietabroader-qr.appspot.com](https://vietabroader-qr.appspot.com) directly into your web browser.
+- Click **Connect to Google Drive** and use the Google account that will be used to hold the generated QR code images to sign in.
+- Copy folder ID into the **Google Drive folder ID** text field as instructed on the page. Be sure to share this folder to the attendees so that they can access their codes.
+- In the attendees sheet, there should be a column holding their emails. Copy this column to the **Email List** text field then click **Generate**.
+
+After a while, the application will generate and upload the corresponding QR code images, then return the list of Google drive links
+
+<img src = "https://user-images.githubusercontent.com/18899970/27971357-09bb7dc2-6318-11e7-8999-4f91a6e057a9.png" width = "500"/>
+
 ### Scan QR Code
 - Sign in your Google Account
 - Copy your Google Sheet ID into Spreadsheet ID
