@@ -1,5 +1,5 @@
 # VAQR
-Before an event starts, we use the [VAQR web application](https://vietabroader-qr.appspot.com) to generate QR codes and send them out to attendees. The lists of attendees are kept in a Google sheet.
+Before an event starts, we use the [VAQR web application](https://vietabroader-qr.appspot.com) to generate QR codes and send them out to attendees. The list of attendees need to be kept in a Google sheet.
  
 On the day of the event, we use this application to connect to that sheet and check attendees in as they give us their QR code.
 ## Table of content
@@ -10,7 +10,7 @@ On the day of the event, we use this application to connect to that sheet and ch
    
 ## Installation
 1. Install [Java Runtime Environment](https://java.com/en/download/).
-2. Go to [Releases page](https://github.com/vietabroader/VAQR/releases) to get the latest binary for either macOS or Windows.
+2. Go to [Releases page](https://github.com/vietabroader/VAQR/releases) to get the latest version of VAQR for either macOS or Windows.
 
 ## Instruction
 ### Generate QR Code
@@ -27,7 +27,7 @@ After a while, the application will generate and upload the corresponding QR cod
 - Sign in your Google Account by clicking the **Sign In** button.
 - Copy your Google Sheet ID into Spreadsheet ID
 
-*Sheet ID is the random looking text in the middle of the URL of your sheet*
+*Spreadsheet ID is the random looking text in the middle of the spreadsheet URL*
     <img src = "https://user-images.githubusercontent.com/18899970/27970654-43c24cba-6315-11e7-91ed-945db7bc16a7.png"/>
 
 - Specify related information of sheet that you are working on into the Workspace section. 
@@ -41,5 +41,5 @@ After a while, the application will generate and upload the corresponding QR cod
 
 - Click **Refresh**. Note that all the changes afterward won't be automatically updated so you need to click the **Refresh** button again should you make any change on the sheet.
     
-- Click on **Start Webcam** to open webcam and scan QR code from attendees
+- Click **Start Webcam** to open webcam and scan QR code from attendees.
 - After a QR code being scanned, if the email can be found in the list a mark will appear in the **Output column**. Otherwise, a message will appear saying that it cannot find the person in the list.
