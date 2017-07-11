@@ -24,16 +24,20 @@ After a while, the application will generate and upload the corresponding QR cod
 - Sign in your Google Account by clicking the **Sign In** button.
 - Copy your Google Sheet ID into Spreadsheet ID
 
-*Where to find Sheet ID*
+*Sheet ID is the random looking text in the middle of the URL of your sheet*
     <img src = "https://user-images.githubusercontent.com/18899970/27970654-43c24cba-6315-11e7-91ed-945db7bc16a7.png"/>
 
 - Enter these information into the Workspace section accordingly.
 - Insert information into Workspace section. 
-Let's say you have a list of attendees on a sheet as below. Your list goes from row **4** to row **7**. The email column is **B** and the output column is **D**.
-fds
+
+*Let's say you have a list of attendees on a sheet as below. You generate the QR code from each person's email and you want to mark a person's presence in the Checked-in column. In this case, your list goes from row **4** to row **7**. The **Key column** is **B** and the **Output column** is **D**.*
+
+<img width="542" src="https://user-images.githubusercontent.com/6244849/28052399-cddefe14-65bf-11e7-9666-07bfdc7189c4.png">
+
+<img width="444" src="https://user-images.githubusercontent.com/6244849/28052466-4082d058-65c0-11e7-9e93-e9839c1d6242.png">
+
+
 - Click **Refresh**. Be aware that every change afterward won't be registered so you need to click the **Refresh** button again should you make any change on the sheet.
     
-- Click on Start Webcam to open webcam and scan QR code from attendees
+- Click on **Start Webcam** to open webcam and scan QR code from attendees
 - After a QR code being scanned, a mark will appear in the Output column in the row corresponding to the email read from the code.
-        <img src = "https://user-images.githubusercontent.com/18899970/27972421-ed952c0c-631b-11e7-9044-c1ce6513c394.png">
-
